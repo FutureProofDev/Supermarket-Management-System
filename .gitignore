@@ -1,0 +1,25 @@
+# Virtual environment folder
+venv/
+.venv/
+env/
+
+# Python cache and temporary bytecode
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Environment variables / private credentials
+.env
+.env.local
+
+# IDE configurations (optional but recommended)
+.vscode/
+.idea/
+
+
+
+# Do NOT ignore the placeholder file keeping the folder alive
+!data/.gitkeep
+
+.DS_store
