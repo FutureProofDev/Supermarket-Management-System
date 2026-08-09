@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.store',  
+    'store',  
 ]
 
 MIDDLEWARE = [
@@ -50,7 +50,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'myproject.urls'
+ROOT_URLCONF = 'supermarket_management_system.urls'
 
 TEMPLATES = [
     {
@@ -67,7 +67,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'myproject.wsgi.application'
+WSGI_APPLICATION = 'supermarket_management_system.wsgi.application'
 
 
 # Database
@@ -76,9 +76,9 @@ WSGI_APPLICATION = 'myproject.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'Supermarket Management System',  # Replace with your actual schema/db name
+        'NAME': 'supermarket_db',  # Replace with your actual schema/db name
         'USER': 'root',       # Often 'root' by default
-        'PASSWORD': '12345',   # Your MySQL root password
+        'PASSWORD': '',   # Your MySQL root password
         'HOST': '127.0.0.1',                 # Keeps it on your local machine
         'PORT': '3306',                      # Standard MySQL port
     }

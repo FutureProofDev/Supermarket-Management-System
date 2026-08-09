@@ -1,0 +1,6 @@
+Django>=6.1
+asgiref
+sqlparse
+mysqlclient
+django-environ
+gunicorn
