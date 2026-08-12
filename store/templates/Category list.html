@@ -1,0 +1,17 @@
+{% extends 'store/base.html' %}
+
+{% block title %}Categories{% endblock %}
+
+{% block content %}
+<h1>Categories</h1>
+<a href="{% url 'category_create' %}">Add Category</a>
+<ul>
+    {% for category in categories %}
+    <li>
+        <a href="{% url 'category_detail' category.pk %}">{{ category.name }}</a>
+    </li>
+    {% empty %}
+    <li>No categories yet.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

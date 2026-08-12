@@ -1,0 +1,12 @@
+{% extends 'store/base.html' %}
+
+{% block title %}{{ category.name }}{% endblock %}
+
+{% block content %}
+<h1>{{ category.name }}</h1>
+<p>{{ category.description|default:"No description." }}</p>
+
+<a href="{% url 'category_update' category.pk %}">Edit</a>
+<a href="{% url 'category_delete' category.pk %}">Delete</a>
+<a href="{% url 'category_list' %}">Back to list</a>
+{% endblock %}
