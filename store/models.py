@@ -31,6 +31,7 @@ class Employee(models.Model):
     employee_id = models.AutoField(primary_key=True)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
+    phone = models.CharField(max_length=20, unique=True, blank=True, null=True)
     role = models.CharField(max_length=50)
     email = models.EmailField(max_length=100, unique=True, blank=True, null=True)
 
@@ -213,7 +214,7 @@ class LoyaltyCard(models.Model):
     card_id = models.AutoField(primary_key=True)
     customer = models.OneToOneField(Customer, on_delete=models.CASCADE, related_name='loyalty_card')
     points_balance = models.IntegerField(default=0)
-    # DateField, not DateTimeField -- timezone.localdate, not timezone.now.
+    # DateField, not DateTimeField 
     issued_date = models.DateField(default=timezone.localdate)
 
     class Meta:

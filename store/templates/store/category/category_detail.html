@@ -1,0 +1,99 @@
+{% extends 'store/base.html' %}
+
+{% block title %}{{ category.name }}{% endblock %}
+
+{% block content %}
+<style>
+    .detail-container {
+        max-width: 600px;
+        margin: 2rem auto;
+        font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    .detail-card {
+        background-color: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .detail-card h1 {
+        margin: 0 0 0.75rem 0;
+        font-size: 1.5rem;
+        color: #111827;
+    }
+
+    .detail-card p {
+        margin: 0;
+        color: #4b5563;
+        line-height: 1.5;
+    }
+
+    .actions-row {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+    }
+
+    /* Base button style */
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        border: 1px solid transparent;
+    }
+
+    /* Primary / Edit button */
+    .btn-edit {
+        background-color: #2563eb;
+        color: #ffffff;
+    }
+
+    .btn-edit:hover {
+        background-color: #1d4ed8;
+    }
+
+    /* Danger / Delete button */
+    .btn-delete {
+        background-color: #dc2626;
+        color: #ffffff;
+    }
+
+    .btn-delete:hover {
+        background-color: #b91c1c;
+    }
+
+    /* Secondary / Back button */
+    .btn-secondary {
+        background-color: #ffffff;
+        color: #374151;
+        border-color: #d1d5db;
+    }
+
+    .btn-secondary:hover {
+        background-color: #f3f4f6;
+        color: #111827;
+        border-color: #9ca3af;
+    }
+</style>
+
+<div class="detail-container">
+    <div class="detail-card">
+        <h1>{{ category.name }}</h1>
+        <p>{{ category.description|default:"No description." }}</p>
+    </div>
+
+    <div class="actions-row">
+        <a href="{% url 'category_update' category.pk %}" class="btn btn-edit">Edit</a>
+        <a href="{% url 'category_delete' category.pk %}" class="btn btn-delete">Delete</a>
+        <a href="{% url 'category_list' %}" class="btn btn-secondary">&larr; Back to list</a>
+    </div>
+</div>
+{% endblock %}

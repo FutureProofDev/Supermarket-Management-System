@@ -1,0 +1,116 @@
+{% extends 'store/base.html' %}
+
+{% block title %}{{ supplier.name }}{% endblock %}
+
+{% block content %}
+<style>
+    .detail-container {
+        max-width: 600px;
+        margin: 2rem auto;
+        font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    .detail-card {
+        background-color: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .detail-card h1 {
+        margin: 0 0 1rem 0;
+        font-size: 1.5rem;
+        color: #111827;
+    }
+
+    .detail-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #f3f4f6;
+    }
+
+    .detail-row:last-child {
+        border-bottom: none;
+    }
+
+    .detail-label {
+        font-weight: 500;
+        color: #4b5563;
+    }
+
+    .detail-value {
+        color: #111827;
+    }
+
+    .actions-row {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        border: 1px solid transparent;
+    }
+
+    .btn-edit {
+        background-color: #2563eb;
+        color: #ffffff;
+    }
+
+    .btn-edit:hover {
+        background-color: #1d4ed8;
+    }
+
+    .btn-delete {
+        background-color: #dc2626;
+        color: #ffffff;
+    }
+
+    .btn-delete:hover {
+        background-color: #b91c1c;
+    }
+
+    .btn-secondary {
+        background-color: #ffffff;
+        color: #374151;
+        border-color: #d1d5db;
+    }
+
+    .btn-secondary:hover {
+        background-color: #f3f4f6;
+        color: #111827;
+        border-color: #9ca3af;
+    }
+</style>
+
+<div class="detail-container">
+    <div class="detail-card">
+        <h1>{{ supplier.name }}</h1>
+        <div class="detail-row">
+            <span class="detail-label">Phone</span>
+            <span class="detail-value">{{ supplier.contact_phone|default:"N/A" }}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Email</span>
+            <span class="detail-value">{{ supplier.email|default:"N/A" }}</span>
+        </div>
+    </div>
+
+    <div class="actions-row">
+        <a href="{% url 'supplier_update' supplier.pk %}" class="btn btn-edit">Edit</a>
+        <a href="{% url 'supplier_delete' supplier.pk %}" class="btn btn-delete">Delete</a>
+        <a href="{% url 'supplier_list' %}" class="btn btn-secondary">&larr; Back to list</a>
+    </div>
+</div>
+{% endblock %}

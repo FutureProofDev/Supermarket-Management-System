@@ -1,0 +1,126 @@
+{% extends 'store/base.html' %}
+
+{% block title %}Suppliers{% endblock %}
+
+{% block content %}
+<style>
+    .suppliers-container {
+        max-width: 600px;
+        margin: 2rem auto;
+        font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    .header-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .header-row h1 {
+        margin: 0;
+        font-size: 1.5rem;
+        color: #111827;
+    }
+
+    .btn-add {
+        background-color: #2563eb;
+        color: #ffffff;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 0.875rem;
+        font-weight: 500;
+        transition: background-color 0.2s ease;
+    }
+
+    .btn-add:hover {
+        background-color: #1d4ed8;
+    }
+
+    .supplier-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .supplier-item {
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .supplier-item:last-child {
+        border-bottom: none;
+    }
+
+    .supplier-link {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.875rem 1.25rem;
+        color: #374151;
+        text-decoration: none;
+        font-weight: 500;
+        transition: background-color 0.15s ease;
+    }
+
+    .supplier-link:hover {
+        background-color: #f9fafb;
+        color: #2563eb;
+    }
+
+    .supplier-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .supplier-meta {
+        font-size: 0.8125rem;
+        color: #6b7280;
+        font-weight: normal;
+        margin-top: 0.125rem;
+    }
+
+    .empty-state {
+        padding: 2rem;
+        text-align: center;
+        color: #6b7280;
+        background-color: #f9fafb;
+        border: 1px dashed #d1d5db;
+        border-radius: 8px;
+    }
+</style>
+
+<div class="suppliers-container">
+    <div class="header-row">
+        <h1>Suppliers</h1>
+        <a href="{% url 'supplier_create' %}" class="btn-add">+ Add Supplier</a>
+    </div>
+
+    {% if suppliers %}
+        <ul class="supplier-list">
+            {% for supplier in suppliers %}
+                <li class="supplier-item">
+                    <a href="{% url 'supplier_detail' supplier.pk %}" class="supplier-link">
+                        <div class="supplier-info">
+                            <span>{{ supplier.name }}</span>
+                            <span class="supplier-meta">
+                                {% if supplier.contact_phone %}{{ supplier.contact_phone }}{% endif %}
+                                {% if supplier.contact_phone and supplier.email %} &bull; {% endif %}
+                                {% if supplier.email %}{{ supplier.email }}{% endif %}
+                            </span>
+                        </div>
+                        <span>&rarr;</span>
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <div class="empty-state">
+            <p>No suppliers recorded yet.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
