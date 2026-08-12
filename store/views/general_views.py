@@ -22,3 +22,7 @@ def home_view(request):
         'low_stock_products': low_stock_products,
     }
     return render(request, 'store/home.html', context)
+
+
+def system_register(request):
+    return render(request, 'store/system_register.html')

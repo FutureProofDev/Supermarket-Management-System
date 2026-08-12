@@ -1,0 +1,198 @@
+{% extends 'store/base.html' %}
+
+{% block title %}System Register - Essentials MS{% endblock %}
+
+{% block content %}
+<style>
+    .register-header {
+        margin-bottom: 2rem;
+    }
+
+    .register-header h1 {
+        font-size: 1.75rem;
+        margin-bottom: 0.25rem;
+        color: var(--color-text);
+    }
+
+    .register-header p {
+        color: var(--color-muted);
+        margin: 0;
+        font-size: 0.95rem;
+    }
+
+    /* Grid for entity groups */
+    .register-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .register-card {
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: 8px;
+        padding: 1.5rem;
+    }
+
+    .register-card h2 {
+        font-size: 1.1rem;
+        color: var(--color-accent);
+        margin-bottom: 0.75rem;
+        border-bottom: 1px solid var(--color-border);
+        padding-bottom: 0.5rem;
+    }
+
+    .entity-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .entity-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid var(--color-border);
+    }
+
+    .entity-item:last-child {
+        border-bottom: none;
+    }
+
+    .entity-title {
+        font-weight: 600;
+        color: var(--color-text);
+        text-decoration: none;
+    }
+
+    .entity-title:hover {
+        color: var(--color-accent);
+    }
+
+    .entity-actions {
+        display: flex;
+        gap: 0.4rem;
+    }
+
+    .btn-sm {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.55rem;
+        background: var(--color-bg);
+        border: 1px solid var(--color-border);
+        border-radius: 4px;
+        color: var(--color-text);
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.15s ease;
+    }
+
+    .btn-sm:hover {
+        background: #f0f0ec;
+        color: var(--color-accent);
+    }
+
+    .btn-sm.add {
+        background: var(--color-accent);
+        color: #ffffff;
+        border-color: transparent;
+    }
+
+    .btn-sm.add:hover {
+        background: var(--color-accent-dark);
+    }
+</style>
+
+<div class="register-header">
+    <h1>System Register</h1>
+    <p>Central directory of all database entities, master records, and management modules.</p>
+</div>
+
+<div class="register-grid">
+
+    <!-- Group 1: Store & Catalog -->
+    <div class="register-card">
+        <h2>Store & Catalog</h2>
+        <ul class="entity-list">
+            <li class="entity-item">
+                <a href="{% url 'category_list' %}" class="entity-title">Categories</a>
+                <div class="entity-actions">
+                    <a href="{% url 'category_list' %}" class="btn-sm">View All</a>
+                    <a href="{% url 'category_create' %}" class="btn-sm add">+ Add</a>
+                </div>
+            </li>
+            <li class="entity-item">
+                <a href="{% url 'discount_list' %}" class="entity-title">Discounts</a>
+                <div class="entity-actions">
+                    <a href="{% url 'discount_list' %}" class="btn-sm">View All</a>
+                    <a href="{% url 'discount_create' %}" class="btn-sm add">+ Add</a>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Group 2: People & Stakeholders -->
+    <div class="register-card">
+        <h2>People & Stakeholders</h2>
+        <ul class="entity-list">
+            <li class="entity-item">
+                <a href="{% url 'customer_list' %}" class="entity-title">Customers</a>
+                <div class="entity-actions">
+                    <a href="{% url 'customer_list' %}" class="btn-sm">View All</a>
+                    <a href="{% url 'customer_create' %}" class="btn-sm add">+ Add</a>
+                </div>
+            </li>
+            <li class="entity-item">
+                <a href="{% url 'employee_list' %}" class="entity-title">Employees</a>
+                <div class="entity-actions">
+                    <a href="{% url 'employee_list' %}" class="btn-sm">View All</a>
+                    <a href="{% url 'employee_create' %}" class="btn-sm add">+ Add</a>
+                </div>
+            </li>
+            <li class="entity-item">
+                <a href="{% url 'supplier_list' %}" class="entity-title">Suppliers</a>
+                <div class="entity-actions">
+                    <a href="{% url 'supplier_list' %}" class="btn-sm">View All</a>
+                    <a href="{% url 'supplier_create' %}" class="btn-sm add">+ Add</a>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Group 3: Inventory & Procurement -->
+    <div class="register-card">
+        <h2>Inventory & Procurement</h2>
+        <ul class="entity-list">
+            <li class="entity-item">
+                <a href="{% url 'product_list' %}" class="entity-title">Products</a>
+                <div class="entity-actions">
+                    <a href="{% url 'product_list' %}" class="btn-sm">View All</a>
+                    <a href="{% url 'product_create' %}" class="btn-sm add">+ Add</a>
+                </div>
+            </li>
+            <li class="entity-item">
+                <a href="{% url 'inventory_list' %}" class="entity-title">Inventory</a>
+                <div class="entity-actions">
+                    <a href="{% url 'inventory_list' %}" class="btn-sm">View All</a>
+                    <a href="{% url 'inventory_create' %}" class="btn-sm add">+ Add</a>
+                </div>
+            </li>
+            <li class="entity-item">
+                <a href="{% url 'purchaseorder_list' %}" class="entity-title">Purchase Orders</a>
+                <div class="entity-actions">
+                    <a href="{% url 'purchaseorder_list' %}" class="btn-sm">View All</a>
+                    <a href="{% url 'purchaseorder_create' %}" class="btn-sm add">+ Add</a>
+                </div>
+            </li>
+            <li class="entity-item">
+                <a href="{% url 'loyaltycard_list' %}" class="entity-title">Loyalty Cards</a>
+                <div class="entity-actions">
+                    <a href="{% url 'loyaltycard_list' %}" class="btn-sm">View All</a>
+                    <a href="{% url 'loyaltycard_create' %}" class="btn-sm add">+ Add</a>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+</div>
+{% endblock %}

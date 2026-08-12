@@ -1,0 +1,24 @@
+{% extends 'store/base.html' %}
+{% block title %}Purchase Orders{% endblock %}
+{% block content %}
+<div class="header-row">
+    <h1>Purchase Orders</h1>
+    <a href="{% url 'purchaseorder_create' %}" class="button">+ Add Purchase Order</a>
+</div>
+{% if orders %}
+<table>
+    <tr><th>#</th><th>Supplier</th><th>Date</th><th>Status</th><th></th></tr>
+    {% for order in orders %}
+    <tr>
+        <td><a href="{% url 'purchaseorder_detail' order.pk %}">PO#{{ order.po_id }}</a></td>
+        <td>{{ order.supplier }}</td>
+        <td>{{ order.order_date }}</td>
+        <td>{{ order.status }}</td>
+        <td><a href="{% url 'purchaseorder_detail' order.pk %}">View</a></td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p>No purchase orders yet.</p>
+{% endif %}
+{% endblock %}

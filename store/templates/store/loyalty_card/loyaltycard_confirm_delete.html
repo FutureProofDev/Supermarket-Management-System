@@ -1,0 +1,11 @@
+{% extends 'store/base.html' %}
+{% block title %}Delete card{% endblock %}
+{% block content %}
+<h1>Delete loyalty card for "{{ card.customer }}"?</h1>
+<p>This can't be undone.</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="danger">Yes, delete</button>
+    <a href="{% url 'loyaltycard_detail' card.pk %}" class="button">Cancel</a>
+</form>
+{% endblock %}

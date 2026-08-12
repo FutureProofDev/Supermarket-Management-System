@@ -1,0 +1,23 @@
+{% extends 'store/base.html' %}
+{% block title %}Inventory{% endblock %}
+{% block content %}
+<div class="header-row">
+    <h1>Inventory</h1>
+    <a href="{% url 'inventory_create' %}" class="button">+ Add Record</a>
+</div>
+{% if inventory %}
+<table>
+    <tr><th>Product</th><th>On hand</th><th>Reorder level</th><th></th></tr>
+    {% for item in inventory %}
+    <tr {% if item.quantity_on_hand <= item.reorder_level %}style="background:#fff3cd;"{% endif %}>
+        <td><a href="{% url 'inventory_detail' item.pk %}">{{ item.product }}</a></td>
+        <td>{{ item.quantity_on_hand }}</td>
+        <td>{{ item.reorder_level }}</td>
+        <td><a href="{% url 'inventory_detail' item.pk %}">View</a></td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p>No inventory records yet.</p>
+{% endif %}
+{% endblock %}

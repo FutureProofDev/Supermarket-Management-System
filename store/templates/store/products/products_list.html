@@ -1,0 +1,25 @@
+{% extends 'store/base.html' %}
+{% block title %}Products{% endblock %}
+{% block content %}
+<div class="header-row">
+    <h1>Products</h1>
+    <a href="{% url 'product_create' %}" class="button">+ Add Product</a>
+</div>
+{% if products %}
+<table>
+    <tr><th>Name</th><th>Category</th><th>Supplier</th><th>Price</th><th>Expiry</th><th></th></tr>
+    {% for product in products %}
+    <tr>
+        <td><a href="{% url 'product_detail' product.pk %}">{{ product.name }}</a></td>
+        <td>{{ product.category }}</td>
+        <td>{{ product.supplier }}</td>
+        <td>GHS {{ product.unit_price }}</td>
+        <td>{{ product.expiry_date|default:"—" }}</td>
+        <td><a href="{% url 'product_detail' product.pk %}">View</a></td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p>No products yet.</p>
+{% endif %}
+{% endblock %}

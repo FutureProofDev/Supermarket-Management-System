@@ -1,0 +1,12 @@
+{% extends 'store/base.html' %}
+{% block title %}{{ card.customer }}{% endblock %}
+{% block content %}
+<h1>Loyalty Card — {{ card.customer }}</h1>
+<p><strong>Points balance:</strong> {{ card.points_balance }}</p>
+<p><strong>Issued:</strong> {{ card.issued_date }}</p>
+<div class="actions">
+    <a href="{% url 'loyaltycard_update' card.pk %}" class="button">Edit</a>
+    <a href="{% url 'loyaltycard_delete' card.pk %}" class="button danger">Delete</a>
+    <a href="{% url 'loyaltycard_list' %}" class="button">&larr; Back to list</a>
+</div>
+{% endblock %}

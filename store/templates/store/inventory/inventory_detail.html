@@ -1,0 +1,15 @@
+{% extends 'store/base.html' %}
+{% block title %}{{ item.product }}{% endblock %}
+{% block content %}
+<h1>{{ item.product }}</h1>
+<p><strong>Quantity on hand:</strong> {{ item.quantity_on_hand }}</p>
+<p><strong>Reorder level:</strong> {{ item.reorder_level }}</p>
+{% if item.quantity_on_hand <= item.reorder_level %}
+<p style="color:#a3372c;"><strong>Low stock — reorder needed.</strong></p>
+{% endif %}
+<div class="actions">
+    <a href="{% url 'inventory_update' item.pk %}" class="button">Edit</a>
+    <a href="{% url 'inventory_delete' item.pk %}" class="button danger">Delete</a>
+    <a href="{% url 'inventory_list' %}" class="button">&larr; Back to list</a>
+</div>
+{% endblock %}

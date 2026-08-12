@@ -1,0 +1,23 @@
+{% extends 'store/base.html' %}
+{% block title %}Loyalty Cards{% endblock %}
+{% block content %}
+<div class="header-row">
+    <h1>Loyalty Cards</h1>
+    <a href="{% url 'loyaltycard_create' %}" class="button">+ Add Loyalty Card</a>
+</div>
+{% if cards %}
+<table>
+    <tr><th>Customer</th><th>Points</th><th>Issued</th><th></th></tr>
+    {% for card in cards %}
+    <tr>
+        <td><a href="{% url 'loyaltycard_detail' card.pk %}">{{ card.customer }}</a></td>
+        <td>{{ card.points_balance }}</td>
+        <td>{{ card.issued_date }}</td>
+        <td><a href="{% url 'loyaltycard_detail' card.pk %}">View</a></td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p>No loyalty cards yet.</p>
+{% endif %}
+{% endblock %}

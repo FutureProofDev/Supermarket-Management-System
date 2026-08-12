@@ -1,0 +1,289 @@
+/* ==========================================================================
+   1. COLOR VARIABLES & THEMES
+   ========================================================================== */
+
+/* Light Mode (Default) Theme Variables */
+:root {
+    --color-bg: #f7f7f5;
+    --color-surface: #ffffff;
+    --color-border: #e0e0dc;
+    --color-text: #2b2b28;
+    --color-muted: #6b6b66;
+    --color-accent: #2f6f4f;
+    --color-accent-dark: #24573f;
+    --color-danger: #a3372c;
+    --color-success: #2f6f4f;
+    --color-table-head-bg: #f0f0ec;
+    --color-secondary-hover-bg: #f0f0ec;
+    --color-message-success-bg: #eaf3ec;
+    --color-message-success-border: #bcdcc4;
+    --color-message-error-bg: #f7e8e6;
+    --color-message-error-border: #e3b8b1;
+}
+
+/* Dark Mode Theme Overrides */
+body.dark-mode {
+    --color-bg: #171a17;
+    --color-surface: #1f2320;
+    --color-border: #343a35;
+    --color-text: #e8ece8;
+    --color-muted: #aeb6ae;
+    --color-accent: #68b78d;
+    --color-accent-dark: #519f76;
+    --color-danger: #d87f76;
+    --color-success: #8ad6ac;
+    --color-table-head-bg: #252b26;
+    --color-secondary-hover-bg: #2a302b;
+    --color-message-success-bg: #1c2a21;
+    --color-message-success-border: #325840;
+    --color-message-error-bg: #2f1f1d;
+    --color-message-error-border: #72433e;
+}
+
+
+/* ==========================================================================
+   2. BASE LAYOUT & TYPOGRAPHY
+   ========================================================================== */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--color-bg);
+    color: var(--color-text);
+    line-height: 1.5;
+}
+
+main {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+}
+
+h1, h2, h3 {
+    margin-top: 0;
+}
+
+
+/* ==========================================================================
+   3. NAVIGATION BAR
+   ========================================================================== */
+
+nav {
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+    padding: 0.9rem 1.5rem;
+    display: flex;
+    gap: 1.25rem;
+    align-items: center;
+}
+
+.nav-brand {
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--color-accent);
+    text-decoration: none;
+    margin-right: 0.5rem;
+}
+
+.nav-links {
+    display: flex;
+    gap: 1.25rem;
+    align-items: center;
+}
+
+nav a {
+    color: var(--color-text);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: color 0.2s ease, text-shadow 0.2s ease, transform 0.2s ease;
+}
+
+nav a:hover {
+    color: var(--color-accent);
+    text-shadow: 0 0 10px rgba(104, 183, 141, 0.25);
+    transform: translateY(-1px);
+}
+
+/* Navigation Overrides for Dark Mode */
+body.dark-mode nav a {
+    color: #ffffff;
+}
+
+body.dark-mode nav a:hover {
+    color: #d9f2e5;
+    text-shadow: 0 0 10px rgba(217, 242, 229, 0.28);
+}
+
+/* Dark Mode Toggle Button in Nav */
+.toggle-dark-mode {
+    margin-left: auto;
+    background: var(--color-surface);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+}
+
+.toggle-dark-mode:hover {
+    background: var(--color-secondary-hover-bg);
+}
+
+
+/* ==========================================================================
+   4. DATA TABLES
+   ========================================================================== */
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+}
+
+th, td {
+    text-align: left;
+    padding: 0.6rem 0.8rem;
+    border-bottom: 1px solid var(--color-border);
+}
+
+th {
+    background: var(--color-table-head-bg);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--color-muted);
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+/* Table Hyperlinks */
+table a {
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    transition: color 0.2s ease;
+}
+
+table a:hover {
+    color: var(--color-accent-dark);
+}
+
+body.dark-mode table a {
+    color: #ffffff;
+}
+
+body.dark-mode table a:hover {
+    color: #d9f2e5;
+}
+
+
+/* ==========================================================================
+   5. BUTTONS & ACTIONS
+   ========================================================================== */
+
+/* Primary Button Base Style */
+a.button, button, input[type="submit"] {
+    display: inline-block;
+    background: var(--color-accent);
+    color: #fff;
+    border: 1px solid transparent;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+a.button:hover, button:hover, input[type="submit"]:hover {
+    background: var(--color-accent-dark);
+}
+
+/* Danger Button Variant */
+a.button.danger, button.danger {
+    background: var(--color-danger);
+}
+
+a.button.danger:hover, button.danger:hover {
+    background: #7e2b22;
+}
+
+/* Secondary / Outline Button Variant */
+a.button.secondary, button.secondary {
+    background: var(--color-surface);
+    color: var(--color-text);
+    border-color: var(--color-border);
+}
+
+a.button.secondary:hover, button.secondary:hover {
+    background: var(--color-secondary-hover-bg);
+    color: var(--color-text);
+}
+
+.actions {
+    display: flex;
+    gap: 0.6rem;
+    margin-top: 1.25rem;
+}
+
+
+/* ==========================================================================
+   6. FORM INPUTS & LABELS
+   ========================================================================== */
+
+form p {
+    margin: 0.75rem 0;
+}
+
+form label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    font-size: 0.9rem;
+}
+
+form input, form textarea, form select {
+    width: 100%;
+    padding: 0.5rem 0.6rem;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    font-size: 0.95rem;
+    font-family: inherit;
+}
+
+
+/* ==========================================================================
+   7. DJANGO FLASH MESSAGES
+   ========================================================================== */
+
+ul.messages {
+    list-style: none;
+    padding: 0;
+    margin: 1rem auto 0;
+    max-width: 960px;
+    padding: 0 1.5rem;
+}
+
+/* Success Message Alert */
+ul.messages li {
+    background: var(--color-message-success-bg);
+    border: 1px solid var(--color-message-success-border);
+    color: var(--color-success);
+    padding: 0.6rem 0.9rem;
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+/* Error Message Alert Variant */
+ul.messages li.error {
+    background: var(--color-message-error-bg);
+    border-color: var(--color-message-error-border);
+    color: var(--color-danger);
+}

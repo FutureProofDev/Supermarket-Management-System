@@ -4,3 +4,7 @@ from .employee import *
 from .customer import *
 from .discount import *
 from .general_views import *
+from .product import *
+from .purchase_order import *
+from .inventory import *
+from .loyalty_card import *

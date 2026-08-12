@@ -1,0 +1,18 @@
+{% extends 'store/base.html' %}
+{% block title %}{{ product.name }}{% endblock %}
+{% block content %}
+<h1>{{ product.name }}</h1>
+<p><strong>Category:</strong> {{ product.category }}</p>
+<p><strong>Supplier:</strong> {{ product.supplier }}</p>
+<p><strong>Unit price:</strong> GHS {{ product.unit_price }}</p>
+<p><strong>Barcode:</strong> {{ product.barcode }}</p>
+<p><strong>Expiry date:</strong> {{ product.expiry_date|default:"N/A" }}</p>
+<p><strong>Inventory:</strong>
+    {% if product.inventory %}{{ product.inventory.quantity_on_hand }} on hand (reorder at {{ product.inventory.reorder_level }}){% else %}No inventory record{% endif %}
+</p>
+<div class="actions">
+    <a href="{% url 'product_update' product.pk %}" class="button">Edit</a>
+    <a href="{% url 'product_delete' product.pk %}" class="button danger">Delete</a>
+    <a href="{% url 'product_list' %}" class="button">&larr; Back to list</a>
+</div>
+{% endblock %}

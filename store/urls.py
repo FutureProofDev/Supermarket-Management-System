@@ -7,6 +7,9 @@ urlpatterns = urlpatterns = [
     # Server landing page (root URL)
     path('', views.home_view, name='home'),
 
+    # Central Directory
+    path('register/', views.system_register, name='system_register'),
+
 
     # Category URLs
     path('categories/', views.category_list, name='category_list'),
@@ -42,4 +45,32 @@ urlpatterns = urlpatterns = [
     path('discounts/<int:pk>/', views.discount_detail, name='discount_detail'),
     path('discounts/<int:pk>/edit/', views.discount_update, name='discount_update'),
     path('discounts/<int:pk>/delete/', views.discount_delete, name='discount_delete'),
+
+    # Product URLs
+    path('products/', views.product_list, name='product_list'),
+    path('products/new/', views.product_create, name='product_create'),
+    path('products/<int:pk>/', views.product_detail, name='product_detail'),
+    path('products/<int:pk>/edit/', views.product_update, name='product_update'),
+    path('products/<int:pk>/delete/', views.product_delete, name='product_delete'),
+
+    # PurchaseOrder URLs
+    path('purchase-orders/', views.purchaseorder_list, name='purchaseorder_list'),
+    path('purchase-orders/new/', views.purchaseorder_create, name='purchaseorder_create'),
+    path('purchase-orders/<int:pk>/', views.purchaseorder_detail, name='purchaseorder_detail'),
+    path('purchase-orders/<int:pk>/edit/', views.purchaseorder_update, name='purchaseorder_update'),
+    path('purchase-orders/<int:pk>/delete/', views.purchaseorder_delete, name='purchaseorder_delete'),
+
+    # Inventory URLs
+    path('inventory/', views.inventory_list, name='inventory_list'),
+    path('inventory/new/', views.inventory_create, name='inventory_create'),
+    path('inventory/<int:pk>/', views.inventory_detail, name='inventory_detail'),
+    path('inventory/<int:pk>/edit/', views.inventory_update, name='inventory_update'),
+    path('inventory/<int:pk>/delete/', views.inventory_delete, name='inventory_delete'),
+
+    # LoyaltyCard URLs
+    path('loyalty-cards/', views.loyaltycard_list, name='loyaltycard_list'),
+    path('loyalty-cards/new/', views.loyaltycard_create, name='loyaltycard_create'),
+    path('loyalty-cards/<int:pk>/', views.loyaltycard_detail, name='loyaltycard_detail'),
+    path('loyalty-cards/<int:pk>/edit/', views.loyaltycard_update, name='loyaltycard_update'),
+    path('loyalty-cards/<int:pk>/delete/', views.loyaltycard_delete, name='loyaltycard_delete'),
 ]

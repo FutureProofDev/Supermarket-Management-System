@@ -1,0 +1,24 @@
+{% extends 'store/base.html' %}
+{% block title %}PO#{{ order.po_id }}{% endblock %}
+{% block content %}
+<h1>Purchase Order #{{ order.po_id }}</h1>
+<p><strong>Supplier:</strong> {{ order.supplier }}</p>
+<p><strong>Order date:</strong> {{ order.order_date }}</p>
+<p><strong>Status:</strong> {{ order.status }}</p>
+<h2>Items</h2>
+{% if order.items.all %}
+<table>
+    <tr><th>Product</th><th>Quantity</th><th>Unit cost</th></tr>
+    {% for item in order.items.all %}
+    <tr><td>{{ item.product }}</td><td>{{ item.quantity }}</td><td>GHS {{ item.unit_cost }}</td></tr>
+    {% endfor %}
+</table>
+{% else %}
+<p>No line items yet.</p>
+{% endif %}
+<div class="actions">
+    <a href="{% url 'purchaseorder_update' order.pk %}" class="button">Edit</a>
+    <a href="{% url 'purchaseorder_delete' order.pk %}" class="button danger">Delete</a>
+    <a href="{% url 'purchaseorder_list' %}" class="button">&larr; Back to list</a>
+</div>
+{% endblock %}

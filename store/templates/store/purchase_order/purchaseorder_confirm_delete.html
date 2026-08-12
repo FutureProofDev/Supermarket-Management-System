@@ -1,0 +1,11 @@
+{% extends 'store/base.html' %}
+{% block title %}Delete PO#{{ order.po_id }}{% endblock %}
+{% block content %}
+<h1>Delete Purchase Order #{{ order.po_id }}?</h1>
+<p>This can't be undone. All line items on this order will also be deleted.</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="danger">Yes, delete</button>
+    <a href="{% url 'purchaseorder_detail' order.pk %}" class="button">Cancel</a>
+</form>
+{% endblock %}
