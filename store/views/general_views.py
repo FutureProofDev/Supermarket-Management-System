@@ -12,7 +12,7 @@ def home_view(request):
     total_suppliers = Supplier.objects.count()
     
     # Fetch items with 5 or fewer units in stock
-    low_stock_products = Product.objects.filter(stock__lte=5)
+    low_stock_products = Product.objects.filter(inventory__lte=5)
     
     context = {
         'total_products': total_products,
