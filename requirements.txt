@@ -4,3 +4,4 @@ sqlparse
 mysqlclient
 django-environ
 gunicorn
+djangorestframework
