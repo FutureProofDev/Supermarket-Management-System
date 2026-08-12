@@ -1,7 +1,5 @@
 from django.shortcuts import render,  redirect, get_object_or_404
 
-# Create your views here.
-
 from django.db.models import ProtectedError
 from django.contrib import messages
 

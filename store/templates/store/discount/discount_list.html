@@ -1,0 +1,24 @@
+{% extends 'store/base.html' %}
+{% block title %}Discounts{% endblock %}
+{% block content %}
+<div class="header-row">
+    <h1>Discounts</h1>
+    <a href="{% url 'discount_create' %}" class="btn button">+ Add Discount</a>
+</div>
+{% if discounts %}
+<table>
+    <tr><th>Name</th><th>% Off</th><th>Start</th><th>End</th><th></th></tr>
+    {% for discount in discounts %}
+    <tr>
+        <td><a href="{% url 'discount_detail' discount.pk %}">{{ discount.name }}</a></td>
+        <td>{{ discount.percent_off }}%</td>
+        <td>{{ discount.start_date }}</td>
+        <td>{{ discount.end_date }}</td>
+        <td><a href="{% url 'discount_detail' discount.pk %}">View</a></td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p>No discounts yet.</p>
+{% endif %}
+{% endblock %}

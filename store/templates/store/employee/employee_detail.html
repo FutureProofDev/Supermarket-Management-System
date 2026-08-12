@@ -1,0 +1,12 @@
+{% extends 'store/base.html' %}
+{% block title %}{{ employee }}{% endblock %}
+{% block content %}
+<h1>{{ employee }}</h1>
+<p><strong>Role:</strong> {{ employee.role }}</p>
+<p><strong>Email:</strong> {{ employee.email|default:"N/A" }}</p>
+<div class="actions">
+    <a href="{% url 'employee_update' employee.pk %}" class="button">Edit</a>
+    <a href="{% url 'employee_delete' employee.pk %}" class="button danger">Delete</a>
+    <a href="{% url 'employee_list' %}" class="button">&larr; Back to list</a>
+</div>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends 'store/base.html' %}
+{% block title %}Delete {{ discount.name }}{% endblock %}
+{% block content %}
+<h1>Delete "{{ discount.name }}"?</h1>
+<p>This can't be undone. Past sale items using this discount will keep their line totals but lose the discount reference.</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="danger">Yes, delete</button>
+    <a href="{% url 'discount_detail' discount.pk %}" class="button">Cancel</a>
+</form>
+{% endblock %}

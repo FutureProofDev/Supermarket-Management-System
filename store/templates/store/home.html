@@ -1,0 +1,147 @@
+{% extends 'store/base.html' %}
+
+{% block title %}Dashboard - Essentials MS{% endblock %}
+
+{% block content %}
+<style>
+    .dashboard-header {
+        margin-bottom: 2rem;
+    }
+
+    .dashboard-header h1 {
+        font-size: 1.75rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .dashboard-header p {
+        color: var(--color-muted);
+        margin: 0;
+    }
+
+    /* Summary Stats Grid */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: 8px;
+        padding: 1.25rem;
+    }
+
+    .stat-card .label {
+        font-size: 0.85rem;
+        color: var(--color-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-weight: 600;
+    }
+
+    .stat-card .value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--color-text);
+        margin-top: 0.25rem;
+    }
+
+    .stat-card.alert .value {
+        color: var(--color-danger);
+    }
+
+    /* Quick Actions */
+    .quick-actions {
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: 8px;
+        padding: 1.25rem;
+        margin-bottom: 2rem;
+    }
+
+    .quick-actions h2 {
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+    }
+
+    .section-title {
+        font-size: 1.25rem;
+        margin-bottom: 1rem;
+    }
+</style>
+
+<div class="dashboard-header">
+    <h1>System Dashboard</h1>
+    <p>Overview of store inventory, categories, and low-stock alerts.</p>
+</div>
+
+<!-- Metrics Cards -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="label">Total Products</div>
+        <div class="value">{{ total_products|default:0 }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="label">Categories</div>
+        <div class="value">{{ total_categories|default:0 }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="label">Suppliers</div>
+        <div class="value">{{ total_suppliers|default:0 }}</div>
+    </div>
+    <div class="stat-card {% if low_stock_count > 0 %}alert{% endif %}">
+        <div class="label">Low Stock Items</div>
+        <div class="value">{{ low_stock_count|default:0 }}</div>
+    </div>
+</div>
+
+<!-- Quick Operations -->
+<div class="quick-actions">
+    <h2>Quick Operations</h2>
+    <div class="action-buttons">
+        <a href="{% url 'category_create' %}" class="button secondary">+ Add Category</a>
+        <a href="{% url 'category_list' %}" class="button secondary">View Categories</a>
+    </div>
+</div>
+
+<!-- Low Stock Table -->
+<h2 class="section-title">Attention Needed (Low Inventory)</h2>
+{% if low_stock_products %}
+    <table>
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Category</th>
+                <th>Unit Price</th>
+                <th>Remaining Inventory</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in low_stock_products %}
+            <tr>
+                <td><strong>{{ product.name }}</strong></td>
+                <td>{{ product.category.name|default:"Uncategorized" }}</td>
+                <td>GH₵ {{ product.unit_price }}</td>
+                <td>
+                    <span style="color: var(--color-danger); font-weight: 700;">
+                        {{ product.inventory }} units
+                    </span>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <div style="background: var(--color-surface); border: 1px solid var(--color-border); padding: 1.5rem; border-radius: 8px; color: var(--color-muted); text-align: center;">
+        All inventory levels are healthy!
+    </div>
+{% endif %}
+{% endblock %}

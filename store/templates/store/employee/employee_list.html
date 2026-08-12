@@ -1,0 +1,23 @@
+{% extends 'store/base.html' %}
+{% block title %}Employees{% endblock %}
+{% block content %}
+<div class="header-row">
+    <h1>Employees</h1>
+    <a href="{% url 'employee_create' %}" class="btn button">+ Add Employee</a>
+</div>
+{% if employees %}
+<table>
+    <tr><th>Name</th><th>Role</th><th>Email</th><th></th></tr>
+    {% for employee in employees %}
+    <tr>
+        <td><a href="{% url 'employee_detail' employee.pk %}">{{ employee }}</a></td>
+        <td>{{ employee.role }}</td>
+        <td>{{ employee.email|default:"N/A" }}</td>
+        <td><a href="{% url 'employee_detail' employee.pk %}">View</a></td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p>No employees yet.</p>
+{% endif %}
+{% endblock %}

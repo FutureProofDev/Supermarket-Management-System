@@ -1,0 +1,11 @@
+{% extends 'store/base.html' %}
+{% block title %}Delete {{ employee }}{% endblock %}
+{% block content %}
+<h1>Delete "{{ employee }}"?</h1>
+<p>This can't be undone.</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="danger">Yes, delete</button>
+    <a href="{% url 'employee_detail' employee.pk %}" class="button">Cancel</a>
+</form>
+{% endblock %}

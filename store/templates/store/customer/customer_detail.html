@@ -1,0 +1,15 @@
+{% extends 'store/base.html' %}
+{% block title %}{{ customer }}{% endblock %}
+{% block content %}
+<h1>{{ customer }}</h1>
+<p><strong>Phone:</strong> {{ customer.phone|default:"N/A" }}</p>
+<p><strong>Email:</strong> {{ customer.email|default:"N/A" }}</p>
+<p><strong>Loyalty card:</strong>
+    {% if customer.loyalty_card %}{{ customer.loyalty_card.points_balance }} points{% else %}No card{% endif %}
+</p>
+<div class="actions">
+    <a href="{% url 'customer_update' customer.pk %}" class="button">Edit</a>
+    <a href="{% url 'customer_delete' customer.pk %}" class="button danger">Delete</a>
+    <a href="{% url 'customer_list' %}" class="button">&larr; Back to list</a>
+</div>
+{% endblock %}
