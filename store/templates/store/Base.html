@@ -17,6 +17,30 @@
             --color-accent-dark: #24573f;
             --color-danger: #a3372c;
             --color-success: #2f6f4f;
+            --color-table-head-bg: #f0f0ec;
+            --color-secondary-hover-bg: #f0f0ec;
+            --color-message-success-bg: #eaf3ec;
+            --color-message-success-border: #bcdcc4;
+            --color-message-error-bg: #f7e8e6;
+            --color-message-error-border: #e3b8b1;
+        }
+
+        body.dark-mode {
+            --color-bg: #171a17;
+            --color-surface: #1f2320;
+            --color-border: #343a35;
+            --color-text: #e8ece8;
+            --color-muted: #aeb6ae;
+            --color-accent: #68b78d;
+            --color-accent-dark: #519f76;
+            --color-danger: #d87f76;
+            --color-success: #8ad6ac;
+            --color-table-head-bg: #252b26;
+            --color-secondary-hover-bg: #2a302b;
+            --color-message-success-bg: #1c2a21;
+            --color-message-success-border: #325840;
+            --color-message-error-bg: #2f1f1d;
+            --color-message-error-border: #72433e;
         }
 
         * {
@@ -59,10 +83,22 @@
             text-decoration: none;
             font-weight: 600;
             font-size: 0.95rem;
+            transition: color 0.2s ease, text-shadow 0.2s ease, transform 0.2s ease;
         }
 
         nav a:hover {
             color: var(--color-accent);
+            text-shadow: 0 0 10px rgba(104, 183, 141, 0.25);
+            transform: translateY(-1px);
+        }
+
+        body.dark-mode nav a {
+            color: #ffffff;
+        }
+
+        body.dark-mode nav a:hover {
+            color: #d9f2e5;
+            text-shadow: 0 0 10px rgba(217, 242, 229, 0.28);
         }
 
         main {
@@ -89,7 +125,7 @@
         }
 
         th {
-            background: #f0f0ec;
+            background: var(--color-table-head-bg);
             font-size: 0.85rem;
             text-transform: uppercase;
             letter-spacing: 0.03em;
@@ -98,6 +134,25 @@
 
         tr:last-child td {
             border-bottom: none;
+        }
+
+        table a {
+            color: var(--color-accent);
+            text-decoration: underline;
+            text-underline-offset: 2px;
+            transition: color 0.2s ease;
+        }
+
+        table a:hover {
+            color: var(--color-accent-dark);
+        }
+
+        body.dark-mode table a {
+            color: #ffffff;
+        }
+
+        body.dark-mode table a:hover {
+            color: #d9f2e5;
         }
 
         /* Generic Button Styles */
@@ -136,14 +191,26 @@
         }
 
         a.button.secondary:hover, button.secondary:hover {
-            background: #f0f0ec;
-            color: #000;
+            background: var(--color-secondary-hover-bg);
+            color: var(--color-text);
         }
 
         .actions {
             display: flex;
             gap: 0.6rem;
             margin-top: 1.25rem;
+        }
+
+        /* Toggle dark mode button in navigation */
+        .toggle-dark-mode {
+            margin-left: auto;
+            background: var(--color-surface);
+            color: var(--color-text);
+            border: 1px solid var(--color-border);
+        }
+
+        .toggle-dark-mode:hover {
+            background: var(--color-secondary-hover-bg);
         }
 
         form p {
@@ -175,8 +242,8 @@
         }
 
         ul.messages li {
-            background: #eaf3ec;
-            border: 1px solid #bcdcc4;
+            background: var(--color-message-success-bg);
+            border: 1px solid var(--color-message-success-border);
             color: var(--color-success);
             padding: 0.6rem 0.9rem;
             border-radius: 6px;
@@ -185,8 +252,8 @@
         }
 
         ul.messages li.error {
-            background: #f7e8e6;
-            border-color: #e3b8b1;
+            background: var(--color-message-error-bg);
+            border-color: var(--color-message-error-border);
             color: var(--color-danger);
         }
     </style>
@@ -210,6 +277,8 @@
                 <a href="{% url 'discount_list' %}">Discount</a>
             {% endblock %}
         </div>
+
+        <button id="dark-mode-toggle" class="toggle-dark-mode" type="button" aria-label="Switch to dark mode">☾</button>
     </nav>
 
     {% if messages %}
@@ -223,6 +292,41 @@
     <main>
         {% block content %}{% endblock %}
     </main>
+
+    <script>
+        (function () {
+            const storageKey = "store-theme";
+            const darkModeClass = "dark-mode";
+            const darkModeToggle = document.getElementById("dark-mode-toggle");
+
+            if (!darkModeToggle) {
+                return;
+            }
+
+            const savedTheme = localStorage.getItem(storageKey);
+            if (savedTheme === "dark") {
+                document.body.classList.add(darkModeClass);
+            }
+
+            function updateToggleVisualState() {
+                const isDarkMode = document.body.classList.contains(darkModeClass);
+                darkModeToggle.textContent = isDarkMode ? "☼" : "☾";
+                darkModeToggle.setAttribute(
+                    "aria-label",
+                    isDarkMode ? "Switch to light mode" : "Switch to dark mode"
+                );
+            }
+
+            updateToggleVisualState();
+
+            darkModeToggle.addEventListener("click", function () {
+                document.body.classList.toggle(darkModeClass);
+                const currentTheme = document.body.classList.contains(darkModeClass) ? "dark" : "light";
+                localStorage.setItem(storageKey, currentTheme);
+                updateToggleVisualState();
+            });
+        })();
+    </script>
 
     {% block extra_js %}{% endblock %}
 </body>
