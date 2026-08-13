@@ -23,6 +23,7 @@ urlpatterns = urlpatterns = [
     path('reports/daily-sales/', views.daily_sales_report, name='daily_sales_report'),
     path('reports/low-stock-expiry/', views.report_low_stock_and_expiry, name='report_low_stock_expiry'),
     path('reports/sales-analytics/', views.report_sales_analytics, name='report_sales_analytics'),
+    path('reports/stock-alerts/', views.stock_alerts_report, name='stock_alerts_report'),
 
     # Category URLs
     path('categories/', views.category_list, name='category_list'),
