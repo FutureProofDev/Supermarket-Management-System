@@ -2,7 +2,19 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from ..models import LoyaltyCard
 from ..forms import LoyaltyCardForm
+from django.contrib.auth.decorators import permission_required
 
+@permission_required('store.add_loyaltycard', raise_exception=True)
+def loyaltycard_create(request):
+    ...
+
+@permission_required('store.change_loyaltycard', raise_exception=True)
+def loyaltycard_update(request, pk):
+    ...
+
+@permission_required('store.delete_loyaltycard', raise_exception=True)
+def loyaltycard_delete(request, pk):
+    ...
 
 def loyaltycard_list(request):
     cards = LoyaltyCard.objects.select_related('customer').order_by('customer__last_name')

@@ -2,7 +2,19 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from ..models import PurchaseOrder
 from ..forms import PurchaseOrderForm
+from django.contrib.auth.decorators import permission_required
 
+@permission_required('store.add_purchaseorder', raise_exception=True)
+def purchaseorder_create(request):
+    ...
+
+@permission_required('store.change_purchaseorder', raise_exception=True)
+def purchaseorder_update(request, pk):
+    ...
+
+@permission_required('store.delete_purchaseorder', raise_exception=True)
+def purchaseorder_delete(request, pk):
+    ...
 
 def purchaseorder_list(request):
     orders = PurchaseOrder.objects.select_related('supplier').order_by('-order_date')

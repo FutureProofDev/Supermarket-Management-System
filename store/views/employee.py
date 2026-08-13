@@ -3,7 +3,19 @@ from django.contrib import messages
 from django.db.models import ProtectedError
 from ..models import Employee
 from ..forms import EmployeeForm
+from django.contrib.auth.decorators import permission_required
 
+@permission_required('store.add_employee', raise_exception=True)
+def employee_create(request):
+    ...
+
+@permission_required('store.change_employee', raise_exception=True)
+def employee_update(request, pk):
+    ...
+
+@permission_required('store.delete_employee', raise_exception=True)
+def employee_delete(request, pk):
+    ...
 
 def employee_list(request):
     employees = Employee.objects.all().order_by('last_name', 'first_name')
