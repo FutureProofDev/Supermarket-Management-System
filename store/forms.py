@@ -1,6 +1,6 @@
 from django import forms
 from .models import *
-
+from django.forms import formset_factory 
 
 class CategoryForm(forms.ModelForm):
     class Meta:
@@ -73,3 +73,16 @@ class LoyaltyCardForm(forms.ModelForm):
         if self.instance.pk:
             qs = qs | Customer.objects.filter(pk=self.instance.customer_id)
         self.fields['customer'].queryset = qs.order_by('last_name', 'first_name')         
+
+
+class SaleHeaderForm(forms.Form):
+    employee = forms.ModelChoiceField(queryset=Employee.objects.all())
+    customer = forms.ModelChoiceField(queryset=Customer.objects.all(), required=False)
+
+
+class SaleLineForm(forms.Form):
+    product = forms.ModelChoiceField(queryset=Product.objects.all(), required=False)
+    quantity = forms.IntegerField(min_value=1, required=False)
+
+
+SaleLineFormSet = formset_factory(SaleLineForm, extra=5)
