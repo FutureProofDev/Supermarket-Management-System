@@ -125,14 +125,14 @@
             </tr>
         </thead>
         <tbody>
-            {% for product in low_stock_products %}
+            {% for item in low_stock_items %}
             <tr>
-                <td><strong>{{ product.name }}</strong></td>
-                <td>{{ product.category.name|default:"Uncategorized" }}</td>
-                <td>GH₵ {{ product.unit_price }}</td>
+                <td><strong>{{ item.product.name }}</strong></td>
+                <td>{{ item.product.category.name|default:"Uncategorized" }}</td>
+                <td>GH₵ {{ item.product.unit_price }}</td>
                 <td>
                     <span style="color: var(--color-danger); font-weight: 700;">
-                        {{ product.inventory }} units
+                        {{ item.quantity_on_hand }} units (reorder at {{ item.reorder_level }})
                     </span>
                 </td>
             </tr>
