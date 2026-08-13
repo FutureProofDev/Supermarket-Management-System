@@ -1,0 +1,64 @@
+{% extends 'store/base.html' %}
+
+{% block title %}Sales Analytics Report{% endblock %}
+
+{% block content %}
+<div class="entity-container">
+    <div class="entity-header">
+        <h1>Sales & Revenue Performance</h1>
+    </div>
+
+    <div style="display: flex; gap: 1rem; margin-bottom: 2rem;">
+        <div class="entity-card" style="flex: 1; text-align: center;">
+            <p style="font-size: 0.85rem; color: var(--color-muted);">TOTAL REVENUE</p>
+            <h2 style="font-size: 2rem; color: var(--color-accent); margin: 0;">GHS {{ grand_total }}</h2>
+        </div>
+        <div class="entity-card" style="flex: 1; text-align: center;">
+            <p style="font-size: 0.85rem; color: var(--color-muted);">TRANSACTIONS</p>
+            <h2 style="font-size: 2rem; margin: 0;">{{ total_sales }}</h2>
+        </div>
+    </div>
+
+    <h2>Top 5 Customers by Lifetime Spend</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Customer</th>
+                <th>Purchases</th>
+                <th>Lifetime Spend</th>
+                <th>Loyalty Points</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for customer in top_customers %}
+            <tr>
+                <td><strong>{{ customer }}</strong></td>
+                <td>{{ customer.num_purchases }}</td>
+                <td>GHS {{ customer.lifetime_spend }}</td>
+                <td>{{ customer.loyalty_card.points_balance|default:"No Card" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2 style="margin-top: 2rem;">Revenue Contribution by Category</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Category</th>
+                <th>Units Sold</th>
+                <th>Total Revenue</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cat in category_revenue %}
+            <tr>
+                <td><strong>{{ cat.category_name }}</strong></td>
+                <td>{{ cat.units_sold }}</td>
+                <td>GHS {{ cat.total_revenue }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

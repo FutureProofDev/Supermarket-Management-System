@@ -1,0 +1,47 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block title %}Reports & Analytics - Essentials MS{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'store/css/reports.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="reports-header">
+    <h1>Reports & Analytics</h1>
+    <p>Real-time database intelligence, sales aggregations, and inventory risk tracking.</p>
+</div>
+
+<div class="reports-grid">
+
+    <!-- Report 1: Low-Stock & Expiry Alert -->
+    <div class="report-card">
+        <div>
+            <h2> Inventory Risk & Expiry</h2>
+            <p>
+                Track items falling below their reorder threshold and flag perishable 
+                products nearing expiration (&le; 45 days) for promotional markdowns.
+            </p>
+        </div>
+        <div class="card-footer">
+            <a href="{% url 'report_low_stock_expiry' %}" class="button">View Report &rarr;</a>
+        </div>
+    </div>
+
+    <!-- Report 2: Sales & Revenue Analytics -->
+    <div class="report-card">
+        <div>
+            <h2> Sales & Revenue Analytics</h2>
+            <p>
+                Analyze total revenue, top VIP customer spenders, and category contribution percentages 
+                derived from historical sales data.
+            </p>
+        </div>
+        <div class="card-footer">
+            <a href="{% url 'report_sales_analytics' %}" class="button">View Report &rarr;</a>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

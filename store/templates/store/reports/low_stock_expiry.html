@@ -1,0 +1,65 @@
+{% extends 'store/base.html' %}
+
+{% block title %}Low-Stock & Expiry Report{% endblock %}
+
+{% block content %}
+<div class="entity-container">
+    <div class="entity-header">
+        <h1>Inventory Risk & Expiry Report</h1>
+    </div>
+
+    <h2>Low-Stock Alert Items</h2>
+    {% if low_stock_items %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Supplier</th>
+                    <th>Contact Phone</th>
+                    <th>Stock</th>
+                    <th>Reorder Level</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in low_stock_items %}
+                <tr>
+                    <td><strong>{{ item.product.name }}</strong></td>
+                    <td>{{ item.product.supplier.name }}</td>
+                    <td>{{ item.product.supplier.contact_phone|default:"N/A" }}</td>
+                    <td style="color: var(--color-danger); font-weight: bold;">{{ item.quantity_on_hand }}</td>
+                    <td>{{ item.reorder_level }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="entity-empty">All inventory levels are healthy.</p>
+    {% endif %}
+
+    <h2 style="margin-top: 2rem;">Near-Expiry Products (&le; 45 Days)</h2>
+    {% if near_expiry_products %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Supplier</th>
+                    <th>Price</th>
+                    <th>Expiry Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in near_expiry_products %}
+                <tr>
+                    <td><strong>{{ product.name }}</strong></td>
+                    <td>{{ product.supplier.name }}</td>
+                    <td>GHS {{ product.unit_price }}</td>
+                    <td style="color: var(--color-danger); font-weight: bold;">{{ product.expiry_date }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="entity-empty">No products are near expiration.</p>
+    {% endif %}
+</div>
+{% endblock %}

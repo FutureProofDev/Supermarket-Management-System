@@ -8,3 +8,4 @@ from .product import *
 from .purchase_order import *
 from .inventory import *
 from .loyalty_card import *
+from .reports import *
