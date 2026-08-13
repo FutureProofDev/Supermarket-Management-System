@@ -84,7 +84,7 @@ def reports_view(request):
 # Report 1: Low-Stock & Near-Expiry Product Alert Report
 # Maps to Q6 & Q10 in advanced_scripts.sql
 # ---------------------------------------------------------------------
-def report_low_stock_and_expiry(request):
+def stock_alerts_report(request):
     today = date.today()
     near_expiry_threshold = today + timedelta(days=45)
 
