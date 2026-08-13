@@ -7,6 +7,9 @@ from django.contrib import messages
 from ..models import *
 from ..forms import *
 
+from datetime import date, timedelta
+
+
 def home_view(request):
     total_products = Product.objects.count()
     total_categories = Category.objects.count()
@@ -34,18 +37,12 @@ def system_register(request):
     return render(request, 'store/system_register.html')
 
 
-# store/views/reports.py
 
-from django.shortcuts import render
-from django.db.models import Sum, Count, F, Q, ExpressionWrapper, DecimalField, Avg
-from django.utils import timezone
-from datetime import date, timedelta
-from store.models import Product, Sale, SaleItem, Inventory, Customer, Supplier
 
-# ---------------------------------------------------------------------
+# store/views/reports.py (might move to reports.py)
+
 # Report 1: Low-Stock & Near-Expiry Product Alert Report
-# Maps to Q6 & Q10 in advanced_scripts.sql
-# ---------------------------------------------------------------------
+
 def report_low_stock_and_expiry(request):
     today = date.today()
     near_expiry_threshold = today + timedelta(days=45)

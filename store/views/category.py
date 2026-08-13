@@ -48,10 +48,7 @@ def category_delete(request, pk):
         try:
             category.delete()
         except ProtectedError:
-            # Product.category is on_delete=PROTECT -- this is that decision
-            # showing up in the UI. Without this except clause, trying to
-            # delete a category that still has products raises an unhandled
-            # 500 instead of a message the user can actually act on.
+            # Product.category is on_delete=PROTECT 
             messages.error(
                 request,
                 f'Can\'t delete "{category.name}" — one or more products still belong to it.'

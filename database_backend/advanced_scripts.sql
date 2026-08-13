@@ -1,226 +1,124 @@
+use supermarket_db;
 
--- ---------------------------------------------------------------------
--- Q4. Top customers by lifetime spend, with loyalty balance
--- Business use: VIP/loyalty marketing targeting.
--- LEFT JOIN on loyalty_card because not every buyer has enrolled.
--- ---------------------------------------------------------------------
-SELECT TOP 5
-    c.customer_id,
-    c.first_name,
-    c.last_name,
-    COUNT(s.sale_id) AS num_purchases,
-    SUM(s.total_amount) AS lifetime_spend,
-    lc.points_balance
-FROM customer c
-JOIN sale s ON s.customer_id = c.customer_id
-LEFT JOIN loyalty_card lc ON lc.customer_id = c.customer_id
-GROUP BY c.customer_id, c.first_name, c.last_name, lc.points_balance
-ORDER BY lifetime_spend DESC;
- 
- 
--- ---------------------------------------------------------------------
--- Q5. Products that have never sold (anti-join)
--- Business use: flag dead stock for clearance/discontinuation review.
--- ---------------------------------------------------------------------
-SELECT p.product_id, p.name, p.unit_price
-FROM product p
-LEFT JOIN sale_item si ON si.product_id = p.product_id
-WHERE si.sale_item_id IS NULL
-ORDER BY p.product_id;
- 
- 
--- ---------------------------------------------------------------------
--- Q6. Low-stock reorder report with supplier contact
--- Business use: feeds directly into raising a new purchase_order.
--- ---------------------------------------------------------------------
-SELECT
+-- ========================================================
+-- 1. ENTERPRISE VIEWS
+-- ========================================================
+
+-- Low Stock Alert View: Identifies products at or below reorder threshold
+create or replace view vw_low_stock_alerts as
+select 
     p.product_id,
-    p.name,
+    p.barcode,
+    p.name as product_name,
+    c.name as category_name,
     i.quantity_on_hand,
     i.reorder_level,
-    s.name AS supplier_name,
-    s.contact_phone,
-    s.email
-FROM inventory i
-JOIN product p ON p.product_id = i.product_id
-JOIN supplier s ON s.supplier_id = p.supplier_id
-WHERE i.quantity_on_hand <= i.reorder_level
-ORDER BY (i.quantity_on_hand - i.reorder_level) ASC;
- 
- 
--- ---------------------------------------------------------------------
--- Q7. Revenue contribution % by category (window function)
--- Business use: category mix analysis for buying/merchandising decisions.
--- ---------------------------------------------------------------------
-WITH category_revenue AS (
-    SELECT
-        c.name AS category_name,
-        SUM(si.line_total) AS category_revenue
-    FROM sale_item si
-    JOIN product p ON p.product_id = si.product_id
-    JOIN category c ON c.category_id = p.category_id
-    GROUP BY c.name
+    (i.reorder_level - i.quantity_on_hand) as shortage_amount,
+    case 
+        when i.quantity_on_hand = 0 then 'out of stock'
+        else 'reorder required'
+    end as alert_status
+from inventory i
+join product p on i.product_id = p.product_id
+join category c on p.category_id = c.category_id
+where i.quantity_on_hand <= i.reorder_level;
+
+-- Daily Cashier Performance View
+create or replace view vw_cashier_daily_sales as
+select 
+    e.employee_id,
+    e.name as cashier_name,
+    date(s.sale_date) as sales_date,
+    count(distinct s.sale_id) as total_transactions,
+    coalesce(sum(s.total_amount), 0) as gross_revenue
+from employee e
+join sale s on e.employee_id = s.employee_id
+group by e.employee_id, e.name, date(s.sale_date);
+
+-- ========================================================
+-- 2. AUTOMATED TRIGGERS
+-- ========================================================
+
+delimiter //
+
+-- Trigger 1: Auto-deduct inventory after a sale item is inserted
+create trigger trg_after_sale_item_insert
+after insert on sale_item
+for each row
+begin
+    update inventory
+    set quantity_on_hand = quantity_on_hand - new.quantity
+    where product_id = new.product_id;
+end//
+
+-- Trigger 2: Auto-add loyalty points on completed checkout (1 point per GHS 10 spent)
+create trigger trg_after_sale_loyalty_update
+after insert on sale
+for each row
+begin
+    if new.customer_id is not null then
+        update loyalty_card
+        set points_balance = points_balance + floor(new.total_amount / 10)
+        where customer_id = new.customer_id;
+    end if;
+end//
+
+delimiter ;
+
+-- ========================================================
+-- 3. STORED PROCEDURES & FUNCTIONS
+-- ========================================================
+
+delimiter //
+
+-- Function: Calculate discounted line total
+create function fn_calculate_discounted_price(
+    p_unit_price decimal(10,2),
+    p_quantity int,
+    p_discount_id int
+) 
+returns decimal(10,2)
+deterministic
+begin
+    declare v_percent decimal(5,2) default 0.00;
+    declare v_total decimal(10,2);
+    
+    if p_discount_id is not null then
+        select percent_off into v_percent 
+        from discount 
+        where discount_id = p_discount_id;
+    end if;
+    
+    set v_total = (p_unit_price * p_quantity) * (1 - (v_percent / 100));
+    return round(v_total, 2);
+end//
+
+-- Procedure: Auto-generate Purchase Orders for Low Stock Items
+create procedure sp_auto_generate_low_stock_po(
+    in p_employee_id int,
+    in p_supplier_id int
 )
-SELECT
-    category_name,
-    category_revenue,
-    ROUND(100 * category_revenue / NULLIF(SUM(category_revenue) OVER (), 0), 2) AS pct_of_total_revenue
-FROM category_revenue
-ORDER BY category_revenue DESC;
- 
- 
--- ---------------------------------------------------------------------
--- Q8. Running cumulative daily revenue (window function: SUM() OVER (ORDER BY ...))
--- Business use: cash-flow tracking, cumulative sales-to-date charts.
--- ---------------------------------------------------------------------
-SELECT
-    sale_date_only,
-    daily_revenue,
-    SUM(daily_revenue) OVER (ORDER BY sale_date_only) AS cumulative_revenue
-FROM (
-    SELECT CONVERT(DATE, sale_date) AS sale_date_only, SUM(total_amount) AS daily_revenue
-    FROM sale
-    GROUP BY CONVERT(DATE, sale_date)
-) AS daily
-ORDER BY sale_date_only;
- 
- 
--- ---------------------------------------------------------------------
--- Q9. Discount effectiveness: discounted vs. full-price line items
--- Business use: does discounting actually move more revenue per line?
--- ---------------------------------------------------------------------
-SELECT
-    CASE WHEN si.discount_id IS NULL THEN 'No Discount' ELSE 'Discounted' END AS line_type,
-    COUNT(*) AS num_lines,
-    ROUND(AVG(si.line_total), 2) AS avg_line_total,
-    SUM(si.line_total) AS total_revenue
-FROM sale_item si
-GROUP BY CASE WHEN si.discount_id IS NULL THEN 'No Discount' ELSE 'Discounted' END;
- 
- 
--- ---------------------------------------------------------------------
--- Q10. Near-expiry markdown report (uses product.expiry_date)
--- Business use: directly powers the checkout API's automatic 50%
--- near-expiry discount and physical markdown tagging on the shop floor.
--- ---------------------------------------------------------------------
-SELECT
-    p.product_id,
-    p.name,
-    p.expiry_date,
-    DATEDIFF(DAY, GETDATE(), p.expiry_date) AS days_until_expiry,
-    i.quantity_on_hand,
-    s.name AS supplier_name
-FROM product p
-JOIN inventory i ON i.product_id = p.product_id
-JOIN supplier s ON s.supplier_id = p.supplier_id
-WHERE p.expiry_date IS NOT NULL
-  AND DATEDIFF(DAY, GETDATE(), p.expiry_date) <= 45
-ORDER BY days_until_expiry ASC;
- 
- 
--- ---------------------------------------------------------------------
--- Q11. Top suppliers by total purchase-order value
--- Business use: identify which suppliers the store depends on most,
--- useful for negotiating terms or diversifying supply risk.
--- ---------------------------------------------------------------------
-SELECT TOP 5
-    s.supplier_id,
-    s.name,
-    COUNT(DISTINCT po.po_id) AS num_orders,
-    SUM(poi.quantity * poi.unit_cost) AS total_po_value
-FROM supplier s
-JOIN purchase_order po ON po.supplier_id = s.supplier_id
-JOIN purchase_order_item poi ON poi.po_id = po.po_id
-GROUP BY s.supplier_id, s.name
-ORDER BY total_po_value DESC;
- 
- 
--- ---------------------------------------------------------------------
--- Q12. Customer segmentation (CTE + CASE)
--- Business use: quick Gold/Silver/Bronze/Inactive tiering for targeted
--- promotions, without needing a separate reporting tool.
--- ---------------------------------------------------------------------
-WITH customer_spend AS (
-    SELECT
-        c.customer_id,
-        c.first_name,
-        c.last_name,
-        COALESCE(SUM(s.total_amount), 0) AS total_spend,
-        COUNT(s.sale_id) AS num_purchases
-    FROM customer c
-    LEFT JOIN sale s ON s.customer_id = c.customer_id
-    GROUP BY c.customer_id, c.first_name, c.last_name
-)
-SELECT
-    *,
-    CASE
-        WHEN total_spend >= 150 THEN 'Gold'
-        WHEN total_spend >= 50 THEN 'Silver'
-        WHEN total_spend > 0 THEN 'Bronze'
-        ELSE 'Inactive'
-    END AS customer_tier
-FROM customer_spend
-ORDER BY total_spend DESC;
- 
- 
--- ---------------------------------------------------------------------
--- Q13. Second-highest-spending customer (window function: DENSE_RANK)
--- Business use: DENSE_RANK (rather than LIMIT 1 OFFSET 1) correctly
--- handles ties for 1st place, which OFFSET-based paging would miss.
--- ---------------------------------------------------------------------
-SELECT customer_id, first_name, last_name, total_spend
-FROM (
-    SELECT
-        c.customer_id,
-        c.first_name,
-        c.last_name,
-        SUM(s.total_amount) AS total_spend,
-        DENSE_RANK() OVER (ORDER BY SUM(s.total_amount) DESC) AS spend_rank
-    FROM customer c
-    JOIN sale s ON s.customer_id = c.customer_id
-    GROUP BY c.customer_id, c.first_name, c.last_name
-) AS ranked
-WHERE spend_rank = 2;
- 
- 
--- ---------------------------------------------------------------------
--- Q14. Products outperforming their own category's average product revenue
--- Business use: identify standout performers within their category.
--- ---------------------------------------------------------------------
-WITH product_revenue AS (
-    SELECT p.product_id, p.name, p.category_id, SUM(si.line_total) AS product_revenue
-    FROM product p
-    JOIN sale_item si ON si.product_id = p.product_id
-    GROUP BY p.product_id, p.name, p.category_id
-),
-category_avg AS (
-    SELECT category_id, AVG(product_revenue) AS avg_category_product_revenue
-    FROM product_revenue
-    GROUP BY category_id
-)
-SELECT
-    pr.product_id,
-    pr.name,
-    pr.category_id,
-    pr.product_revenue,
-    ROUND(ca.avg_category_product_revenue, 2) AS avg_category_product_revenue
-FROM product_revenue pr
-JOIN category_avg ca ON ca.category_id = pr.category_id
-WHERE pr.product_revenue > ca.avg_category_product_revenue
-ORDER BY pr.category_id, pr.product_revenue DESC;
- 
- 
--- ---------------------------------------------------------------------
--- Q15. Average transaction value by employee role
--- Business use: sanity-check whether more experienced roles ring up larger baskets than Cashiers.
--- ---------------------------------------------------------------------
-SELECT
-    e.role,
-    COUNT(DISTINCT e.employee_id) AS num_employees,
-    COUNT(s.sale_id) AS num_transactions,
-    ROUND(AVG(s.total_amount), 2) AS avg_transaction_value
-FROM employee e
-JOIN sale s ON s.employee_id = e.employee_id
-GROUP BY e.role
-HAVING COUNT(s.sale_id) > 0
-ORDER BY avg_transaction_value DESC;
+begin
+    declare v_po_id int;
+    
+    -- create po header
+    insert into purchase_order (supplier_id, employee_id, status)
+    values (p_supplier_id, p_employee_id, 'Draft');
+    
+    set v_po_id = last_insert_id();
+    
+    -- populate po items with recommended reorder quantities
+    insert into purchase_order_item (po_id, product_id, quantity, unit_cost)
+    select 
+        v_po_id,
+        p.product_id,
+        (i.reorder_level * 2) as recommended_qty,
+        round(p.unit_price * 0.70, 2) -- estimated cost price
+    from inventory i
+    join product p on i.product_id = p.product_id
+    where i.quantity_on_hand <= i.reorder_level;
+    
+    select concat('purchase order #', v_po_id, ' drafted successfully.') as result;
+end//
+
+delimiter ;

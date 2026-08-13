@@ -46,8 +46,7 @@ def employee_delete(request, pk):
         try:
             employee.delete()
         except ProtectedError:
-            # Sale.employee is on_delete=PROTECT -- an employee with sales
-            # history can't be silently deleted.
+            # Sale.employee is on_delete=PROTECT. An employee with sales history can't be silently deleted.
             messages.error(
                 request,
                 f'Can\'t delete "{employee}" — sales are still recorded under this employee.'
