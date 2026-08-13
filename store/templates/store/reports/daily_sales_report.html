@@ -1,0 +1,184 @@
+{% extends 'store/base.html' %}
+
+{% block title %}Daily Sales Report{% endblock %}
+
+{% block content %}
+<style>
+    .report-header {
+        margin-bottom: 1.5rem;
+    }
+
+    .report-header h1 {
+        font-size: 1.75rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .report-header p {
+        color: var(--color-muted);
+        margin: 0;
+    }
+
+    .date-filter {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 0.75rem;
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: 8px;
+        padding: 1rem 1.25rem;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+    }
+
+    .date-filter form {
+        display: flex;
+        align-items: flex-end;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+        margin: 0;
+    }
+
+    .date-filter label {
+        margin-bottom: 0.25rem;
+    }
+
+    .date-nav {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: 8px;
+        padding: 1.25rem;
+    }
+
+    .stat-card .label {
+        font-size: 0.85rem;
+        color: var(--color-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-weight: 600;
+    }
+
+    .stat-card .value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--color-text);
+        margin-top: 0.25rem;
+    }
+
+    .section-title {
+        font-size: 1.25rem;
+        margin: 2rem 0 1rem;
+    }
+
+    .empty-state {
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        padding: 1.5rem;
+        border-radius: 8px;
+        color: var(--color-muted);
+        text-align: center;
+    }
+</style>
+
+<div class="report-header">
+    <h1>Daily Sales Report</h1>
+    <p>Revenue and product movement for {{ report_date|date:"l, d F Y" }}{% if is_today %} (today){% endif %}.</p>
+</div>
+
+<div class="date-filter">
+    <form method="get">
+        <div>
+            <label for="date">Report date</label>
+            <input type="date" id="date" name="date" value="{{ report_date|date:'Y-m-d' }}">
+        </div>
+        <button type="submit" class="secondary">View</button>
+    </form>
+    <div class="date-nav">
+        <a href="?date={{ previous_date|date:'Y-m-d' }}" class="button secondary">&larr; Previous day</a>
+        <a href="?date={{ next_date|date:'Y-m-d' }}" class="button secondary">Next day &rarr;</a>
+    </div>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="label">Total Revenue</div>
+        <div class="value">GH₵ {{ total_revenue|floatformat:2 }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="label">Transactions</div>
+        <div class="value">{{ total_transactions }}</div>
+    </div>
+    <div class="stat-card">
+        <div class="label">Items Sold</div>
+        <div class="value">{{ total_items_sold }}</div>
+    </div>
+</div>
+
+<h2 class="section-title">What Was Sold</h2>
+{% if product_breakdown %}
+    <table>
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Quantity Sold</th>
+                <th>Revenue</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in product_breakdown %}
+            <tr>
+                <td><strong>{{ row.product__name }}</strong></td>
+                <td>{{ row.total_quantity }}</td>
+                <td>GH₵ {{ row.total_revenue|floatformat:2 }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <div class="empty-state">
+        <p>No sales recorded on this date.</p>
+    </div>
+{% endif %}
+
+<h2 class="section-title">Transactions</h2>
+{% if sales %}
+    <table>
+        <thead>
+            <tr>
+                <th>Sale #</th>
+                <th>Time</th>
+                <th>Employee</th>
+                <th>Customer</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for sale in sales %}
+            <tr>
+                <td>#{{ sale.sale_id }}</td>
+                <td>{{ sale.sale_date|date:"H:i" }}</td>
+                <td>{{ sale.employee }}</td>
+                <td>{{ sale.customer|default:"Walk-in" }}</td>
+                <td>GH₵ {{ sale.total_amount }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <div class="empty-state">
+        <p>No transactions on this date.</p>
+    </div>
+{% endif %}
+{% endblock %}

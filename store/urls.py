@@ -10,6 +10,9 @@ urlpatterns = urlpatterns = [
     # Central Directory
     path('register/', views.system_register, name='system_register'),
 
+    # Reports URLs
+    path('reports/', views.reports_view, name='reports_view'),
+    path('reports/daily-sales/', views.daily_sales_report, name='daily_sales_report'),
 
     # Category URLs
     path('categories/', views.category_list, name='category_list'),
