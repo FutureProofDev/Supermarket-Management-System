@@ -3,7 +3,20 @@ from django.contrib import messages
 from django.db.models import ProtectedError
 from ..models import Discount
 from ..forms import DiscountForm
+from django.contrib.auth.decorators import permission_required
 
+
+@permission_required('store.add_discount', raise_exception=True)
+def discount_create(request):
+    ...
+
+@permission_required('store.change_discount', raise_exception=True)
+def discount_update(request, pk):
+    ...
+
+@permission_required('store.delete_discount', raise_exception=True)
+def discount_delete(request, pk):
+    ...
 
 def discount_list(request):
     discounts = Discount.objects.all().order_by('-start_date')

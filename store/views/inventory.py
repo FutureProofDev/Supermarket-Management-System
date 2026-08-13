@@ -3,7 +3,19 @@ from django.contrib import messages
 from django.db.models import ProtectedError
 from ..models import Inventory
 from ..forms import InventoryForm
+from django.contrib.auth.decorators import permission_required
 
+@permission_required('store.add_inventory', raise_exception=True)
+def inventory_create(request):
+    ...
+
+@permission_required('store.change_inventory', raise_exception=True)
+def inventory_update(request, pk):
+    ...
+
+@permission_required('store.delete_inventory', raise_exception=True)
+def inventory_delete(request, pk):
+    ...
 
 def inventory_list(request):
     inventory = Inventory.objects.select_related('product').order_by('product__name')

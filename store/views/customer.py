@@ -2,7 +2,19 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from ..models import Customer
 from ..forms import CustomerForm
+from django.contrib.auth.decorators import login_required, permission_required
 
+@permission_required('store.add_customer', raise_exception=True)
+def customer_create(request):
+    ...
+
+@permission_required('store.change_customer', raise_exception=True)
+def customer_update(request, pk):
+    ...
+
+@permission_required('store.delete_customer', raise_exception=True)
+def customer_delete(request, pk):
+    ...
 
 def customer_list(request):
     customers = Customer.objects.all().order_by('last_name', 'first_name')
