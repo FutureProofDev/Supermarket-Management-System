@@ -1,7 +1,6 @@
 from django.db import models
 from django.utils import timezone
 from datetime import timedelta
-from django.contrib.auth.models import User
 
 
 
@@ -45,22 +44,6 @@ class Employee(models.Model):
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
-
-# If creating a custom User model matching your DDL:
-class User(models.Model):
-    user_id = models.AutoField(primary_key=True)
-    employee = models.OneToOneField(
-        Employee, 
-        on_delete=models.CASCADE, 
-        db_column='employee_id',
-        related_name='user_account'
-    )
-    username = models.CharField(max_length=50, unique=True)
-    password_hash = models.CharField(max_length=255)
-    is_active = models.BooleanField(default=True)
-
-    class Meta:
-        db_table = 'user'
 
 
 class Customer(models.Model):
