@@ -74,11 +74,11 @@ def daily_sales_report(request):
 
 
 # GENERAL REPORTS
-def reports_hub(request):
+def reports_view(request):
     """
     Central hub page providing quick navigation cards to all system reports.
     """
-    return render(request, 'store/reports/reports_hub.html')
+    return render(request, 'store/reports/reports_view.html')
 
 # ---------------------------------------------------------------------
 # Report 1: Low-Stock & Near-Expiry Product Alert Report

@@ -13,6 +13,8 @@ urlpatterns = urlpatterns = [
     # Reports URLs
     path('reports/', views.reports_view, name='reports_view'),
     path('reports/daily-sales/', views.daily_sales_report, name='daily_sales_report'),
+    path('reports/low-stock-expiry/', views.report_low_stock_and_expiry, name='report_low_stock_expiry'),
+    path('reports/sales-analytics/', views.report_sales_analytics, name='report_sales_analytics'),
 
     # Category URLs
     path('categories/', views.category_list, name='category_list'),
@@ -77,10 +79,4 @@ urlpatterns = urlpatterns = [
     path('loyalty-cards/<int:pk>/edit/', views.loyaltycard_update, name='loyaltycard_update'),
     path('loyalty-cards/<int:pk>/delete/', views.loyaltycard_delete, name='loyaltycard_delete'),
 
-
-
-    # Report URLs
-    path('reports/', views.reports_hub, name='reports_hub'),
-    path('reports/low-stock-expiry/', views.report_low_stock_and_expiry, name='report_low_stock_expiry'),
-    path('reports/sales-analytics/', views.report_sales_analytics, name='report_sales_analytics'),
 ]

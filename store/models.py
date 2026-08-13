@@ -102,10 +102,10 @@ class Product(models.Model):
             models.Index(fields=['name'], name='idx_product_name'),
         ]
 
-        def is_near_expiry(self):
-            if not self.expiry_date:
-                return False
-            return self.expiry_date <= timezone.localdate() + timedelta(days=45)
+    def is_near_expiry(self):
+        if not self.expiry_date:
+            return False
+        return self.expiry_date <= timezone.localdate() + timedelta(days=45)
 
     def __str__(self):
         return self.name
