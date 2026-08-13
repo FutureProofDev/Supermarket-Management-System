@@ -6,6 +6,7 @@ from django.db.models import F
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from matplotlib import lines
+from django.contrib.auth.decorators import permission_required
 
 from ..forms import SaleHeaderForm, SaleLineFormSet
 from ..models import Inventory, Sale, SaleItem
@@ -17,6 +18,10 @@ LOYALTY_DISCOUNT_RATE = Decimal('0.15')
 EXPIRY_DISCOUNT_RATE = Decimal('0.50')
 
 
+@permission_required('store.add_sale', raise_exception=True)
+def checkout(request):
+    ...
+
 def sale_list(request):
     sales = Sale.objects.select_related('employee', 'customer').order_by('-sale_date')
     return render(request, 'store/sale/sale_list.html', {'sales': sales})
@@ -27,7 +32,8 @@ def sale_detail(request, pk):
     items = sale.items.select_related('product', 'discount')
     return render(request, 'store/sale/sale_detail.html', {'sale': sale, 'items': items})
 
-
+    
+@permission_required('store.add_sale', raise_exception=True)
 def checkout(request):
     if request.method == 'POST':
         header_form = SaleHeaderForm(request.POST)
