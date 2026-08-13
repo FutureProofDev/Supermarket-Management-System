@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils import timezone
-
+from datetime import timedelta
 
 class Supplier(models.Model):
     supplier_id = models.AutoField(primary_key=True)
@@ -101,6 +101,11 @@ class Product(models.Model):
         indexes = [
             models.Index(fields=['name'], name='idx_product_name'),
         ]
+
+        def is_near_expiry(self):
+            if not self.expiry_date:
+                return False
+            return self.expiry_date <= timezone.localdate() + timedelta(days=45)
 
     def __str__(self):
         return self.name
