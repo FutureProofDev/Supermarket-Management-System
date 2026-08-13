@@ -1,8 +1,7 @@
 use supermarket_db;
 
--- ========================================================
+
 -- 1. ENTERPRISE VIEWS
--- ========================================================
 
 -- Low Stock Alert View: Identifies products at or below reorder threshold
 create or replace view vw_low_stock_alerts as
@@ -35,9 +34,10 @@ from employee e
 join sale s on e.employee_id = s.employee_id
 group by e.employee_id, e.name, date(s.sale_date);
 
--- ========================================================
+
+
 -- 2. AUTOMATED TRIGGERS
--- ========================================================
+
 
 delimiter //
 
