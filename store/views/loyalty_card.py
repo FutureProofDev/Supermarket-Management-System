@@ -52,8 +52,7 @@ def loyaltycard_update(request, pk):
 
 
 def loyaltycard_delete(request, pk):
-    # SaleItem.discount aside, nothing points to LoyaltyCard itself --
-    # no incoming FKs, so no ProtectedError possible.
+    # SaleItem.discount aside, nothing points to LoyaltyCard itself. No incoming FKs, so no ProtectedError possible.
     card = get_object_or_404(LoyaltyCard, pk=pk)
     if request.method == 'POST':
         customer_name = str(card.customer)

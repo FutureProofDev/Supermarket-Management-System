@@ -53,8 +53,7 @@ def inventory_update(request, pk):
 
 
 def inventory_delete(request, pk):
-    # Inventory has no incoming FKs from anything else -- nothing points
-    # to an Inventory row, so ProtectedError can't happen here.
+    # Inventory has no incoming FKs from anything else. Nothing points to an Inventory row, so ProtectedError can't happen here.
     item = get_object_or_404(Inventory, pk=pk)
     if request.method == 'POST':
         product_name = item.product.name

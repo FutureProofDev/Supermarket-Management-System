@@ -54,7 +54,7 @@ def discount_update(request, pk):
 
 
 def discount_delete(request, pk):
-    # SaleItem.discount is SET_NULL -- deleting a discount never raises
+    # SaleItem.discount is SET_NULL. Deleting a discount never raises
     # ProtectedError, it just nulls the discount on past sale items.
     discount = get_object_or_404(Discount, pk=pk)
     if request.method == 'POST':
