@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from datetime import timedelta
+from django.contrib.auth.models import User
 
 class Supplier(models.Model):
     supplier_id = models.AutoField(primary_key=True)
@@ -28,10 +29,12 @@ class Category(models.Model):
 
 
 class Employee(models.Model):
-    employee_id = models.AutoField(primary_key=True)
+    user = models.OneToOneField(
+        User, on_delete=models.SET_NULL, null=True, blank=True,
+        related_name='employee_profile',
+    )
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
-    phone = models.CharField(max_length=20, unique=True, blank=True, null=True)
     role = models.CharField(max_length=50)
     email = models.EmailField(max_length=100, unique=True, blank=True, null=True)
 

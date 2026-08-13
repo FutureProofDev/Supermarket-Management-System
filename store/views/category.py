@@ -6,6 +6,7 @@ from django.contrib import messages
 from ..models import Category
 from ..forms import CategoryForm
 
+from django.contrib.auth.decorators import permission_required
 
 def category_list(request):
     categories = Category.objects.all().order_by('name')
@@ -60,3 +61,16 @@ def category_delete(request, pk):
         messages.success(request, f'"{category.name}" deleted.')
         return redirect('category_list')
     return render(request, 'store/category/category_confirm_delete.html', {'category': category})
+
+
+@permission_required('store.add_category', raise_exception=True)
+def category_create(request):
+    ...
+
+@permission_required('store.change_category', raise_exception=True)
+def category_update(request, pk):
+    ...
+
+@permission_required('store.delete_category', raise_exception=True)
+def category_delete(request, pk):
+    ...
