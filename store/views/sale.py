@@ -5,9 +5,12 @@ from django.db import transaction
 from django.db.models import F
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
+from matplotlib import lines
 
 from ..forms import SaleHeaderForm, SaleLineFormSet
 from ..models import Inventory, Sale, SaleItem
+
+from collections import defaultdict
 
 LOYALTY_THRESHOLD = Decimal('1000.00')
 LOYALTY_DISCOUNT_RATE = Decimal('0.15')
@@ -31,11 +34,16 @@ def checkout(request):
         formset = SaleLineFormSet(request.POST)
 
         if header_form.is_valid() and formset.is_valid():
-            lines = [
+            raw_lines = [
                 (line['product'], line['quantity'])
                 for line in formset.cleaned_data
                 if line.get('product') and line.get('quantity')
             ]
+
+            combined = defaultdict(int)
+            for product, quantity in raw_lines:
+                combined[product] += quantity
+            lines = list(combined.items())
 
             if not lines:
                 messages.error(request, 'Add at least one product to the sale.')
