@@ -1,89 +1,32 @@
 {% extends 'store/base.html' %}
 {% block title %}Customers{% endblock %}
 {% block content %}
+<div class="entity-container">
+    <div class="entity-header">
+        <h1>Customers</h1>
+        <a href="{% url 'customer_create' %}" class="button">+ Add Customer</a>
+    </div>
 
-<style>
-    /* Global Link Styling */
-    a {
-        color: var(--color-accent);
-        text-decoration: none;
-        font-weight: 500;
-        transition: color 0.15s ease;
-    }
-
-    a:hover {
-        color: var(--color-accent-dark);
-        text-decoration: underline;
-    }
-
-    /* Header Layout */
-    .header-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 1.5rem;
-    }
-
-    .header-row h1 {
-        margin: 0;
-        font-size: 1.5rem;
-        color: var(--color-text);
-    }
-
-    /* Table & Action Links */
-    .table-link {
-        color: var(--color-text);
-        font-weight: 600;
-    }
-
-    .table-link:hover {
-        color: var(--color-accent);
-        text-decoration: none;
-    }
-
-    .view-link {
-        font-size: 0.875rem;
-        padding: 0.25rem 0.6rem;
-        background-color: var(--color-bg);
-        border: 1px solid var(--color-border);
-        border-radius: 4px;
-        color: var(--color-text);
-        display: inline-block;
-    }
-
-    .view-link:hover {
-        background-color: #f0f0ec;
-        color: #000;
-        text-decoration: none;
-    }
-
-    .empty-state {
-        background: var(--color-surface);
-        border: 1px dashed var(--color-border);
-        padding: 2rem;
-        text-align: center;
-        color: var(--color-muted);
-        border-radius: 8px;
-    }
-</style>
-
-<div class="header-row">
-    <h1>Customers</h1>
-    <a href="{% url 'customer_create' %}" class="btn button">+ Add Customer</a>
+    {% if customers %}
+        <ul class="entity-list">
+            {% for customer in customers %}
+                <li class="entity-item">
+                    <a href="{% url 'customer_detail' customer.pk %}" class="entity-link">
+                        <span>
+                            <span class="entity-link-main">{{ customer }}</span>
+                            <span class="entity-link-meta">
+                                {{ customer.phone|default:"N/A" }} • {{ customer.email|default:"N/A" }}
+                            </span>
+                        </span>
+                        <span class="entity-link-arrow">&rarr;</span>
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <div class="entity-empty">
+            <p>No customers yet.</p>
+        </div>
+    {% endif %}
 </div>
-{% if customers %}
-<table>
-    <tr><th>Name</th><th>Phone</th><th>Email</th><th></th></tr>
-    {% for customer in customers %}
-    <tr>
-        <td><a href="{% url 'customer_detail' customer.pk %}">{{ customer }}</a></td>
-        <td>{{ customer.phone|default:"N/A" }}</td>
-        <td>{{ customer.email|default:"N/A" }}</td>
-        <td><a href="{% url 'customer_detail' customer.pk %}">View</a></td>
-    </tr>
-    {% endfor %}
-</table>
-{% else %}
-<p>No customers yet.</p>
-{% endif %}
 {% endblock %}

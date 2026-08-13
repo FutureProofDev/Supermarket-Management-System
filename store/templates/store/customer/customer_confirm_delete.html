@@ -1,11 +1,20 @@
 {% extends 'store/base.html' %}
 {% block title %}Delete {{ customer }}{% endblock %}
 {% block content %}
-<h1>Delete "{{ customer }}"?</h1>
-<p>This can't be undone. Any loyalty card for this customer will also be deleted; their past sales will remain but show no customer.</p>
-<form method="post">
-    {% csrf_token %}
-    <button type="submit" class="danger">Yes, delete</button>
-    <a href="{% url 'customer_detail' customer.pk %}" class="button">Cancel</a>
-</form>
+<div class="entity-container">
+    <div class="entity-card">
+        <h1>Delete "{{ customer }}"?</h1>
+        <p>
+            This cannot be undone. Any loyalty card for this customer will also be deleted;
+            past sales will remain but show no customer.
+        </p>
+        <form method="post">
+            {% csrf_token %}
+            <div class="entity-form-actions">
+                <button type="submit" class="danger">Yes, delete</button>
+                <a href="{% url 'customer_detail' customer.pk %}" class="button secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
 {% endblock %}

@@ -1,12 +1,23 @@
 {% extends 'store/base.html' %}
 {% block title %}{{ discount.name }}{% endblock %}
 {% block content %}
-<h1>{{ discount.name }}</h1>
-<p><strong>Percent off:</strong> {{ discount.percent_off }}%</p>
-<p><strong>Valid:</strong> {{ discount.start_date }} to {{ discount.end_date }}</p>
-<div class="actions">
-    <a href="{% url 'discount_update' discount.pk %}" class="button">Edit</a>
-    <a href="{% url 'discount_delete' discount.pk %}" class="button danger">Delete</a>
-    <a href="{% url 'discount_list' %}" class="button">&larr; Back to list</a>
+<div class="entity-container">
+    <div class="entity-card">
+        <h1>{{ discount.name }}</h1>
+        <div class="entity-detail-row">
+            <span class="entity-detail-label">Percent off</span>
+            <span class="entity-detail-value">{{ discount.percent_off }}%</span>
+        </div>
+        <div class="entity-detail-row">
+            <span class="entity-detail-label">Valid</span>
+            <span class="entity-detail-value">{{ discount.start_date }} to {{ discount.end_date }}</span>
+        </div>
+    </div>
+
+    <div class="entity-actions">
+        <a href="{% url 'discount_update' discount.pk %}" class="button">Edit</a>
+        <a href="{% url 'discount_delete' discount.pk %}" class="button danger">Delete</a>
+        <a href="{% url 'discount_list' %}" class="button secondary">&larr; Back to list</a>
+    </div>
 </div>
 {% endblock %}

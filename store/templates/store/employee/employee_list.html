@@ -1,89 +1,32 @@
 {% extends 'store/base.html' %}
 {% block title %}Employees{% endblock %}
 {% block content %}
+<div class="entity-container">
+    <div class="entity-header">
+        <h1>Employees</h1>
+        <a href="{% url 'employee_create' %}" class="button">+ Add Employee</a>
+    </div>
 
-<style>
-    /* Global Link Styling */
-    a {
-        color: var(--color-accent);
-        text-decoration: none;
-        font-weight: 500;
-        transition: color 0.15s ease;
-    }
-
-    a:hover {
-        color: var(--color-accent-dark);
-        text-decoration: underline;
-    }
-
-    /* Header Layout */
-    .header-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 1.5rem;
-    }
-
-    .header-row h1 {
-        margin: 0;
-        font-size: 1.5rem;
-        color: var(--color-text);
-    }
-
-    /* Table & Action Links */
-    .table-link {
-        color: var(--color-text);
-        font-weight: 600;
-    }
-
-    .table-link:hover {
-        color: var(--color-accent);
-        text-decoration: none;
-    }
-
-    .view-link {
-        font-size: 0.875rem;
-        padding: 0.25rem 0.6rem;
-        background-color: var(--color-bg);
-        border: 1px solid var(--color-border);
-        border-radius: 4px;
-        color: var(--color-text);
-        display: inline-block;
-    }
-
-    .view-link:hover {
-        background-color: #f0f0ec;
-        color: #000;
-        text-decoration: none;
-    }
-
-    .empty-state {
-        background: var(--color-surface);
-        border: 1px dashed var(--color-border);
-        padding: 2rem;
-        text-align: center;
-        color: var(--color-muted);
-        border-radius: 8px;
-    }
-</style>
-
-<div class="header-row">
-    <h1>Employees</h1>
-    <a href="{% url 'employee_create' %}" class="btn button">+ Add Employee</a>
+    {% if employees %}
+        <ul class="entity-list">
+            {% for employee in employees %}
+                <li class="entity-item">
+                    <a href="{% url 'employee_detail' employee.pk %}" class="entity-link">
+                        <span>
+                            <span class="entity-link-main">{{ employee }}</span>
+                            <span class="entity-link-meta">
+                                {{ employee.role|default:"N/A" }} • {{ employee.email|default:"N/A" }}
+                            </span>
+                        </span>
+                        <span class="entity-link-arrow">&rarr;</span>
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <div class="entity-empty">
+            <p>No employees yet.</p>
+        </div>
+    {% endif %}
 </div>
-{% if employees %}
-<table>
-    <tr><th>Name</th><th>Role</th><th>Email</th><th></th></tr>
-    {% for employee in employees %}
-    <tr>
-        <td><a href="{% url 'employee_detail' employee.pk %}">{{ employee }}</a></td>
-        <td>{{ employee.role }}</td>
-        <td>{{ employee.email|default:"N/A" }}</td>
-        <td><a href="{% url 'employee_detail' employee.pk %}">View</a></td>
-    </tr>
-    {% endfor %}
-</table>
-{% else %}
-<p>No employees yet.</p>
-{% endif %}
 {% endblock %}

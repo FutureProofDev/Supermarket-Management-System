@@ -1,90 +1,32 @@
 {% extends 'store/base.html' %}
 {% block title %}Discounts{% endblock %}
 {% block content %}
+<div class="entity-container">
+    <div class="entity-header">
+        <h1>Discounts</h1>
+        <a href="{% url 'discount_create' %}" class="button">+ Add Discount</a>
+    </div>
 
-<style>
-    /* Global Link Styling */
-    a {
-        color: var(--color-accent);
-        text-decoration: none;
-        font-weight: 500;
-        transition: color 0.15s ease;
-    }
-
-    a:hover {
-        color: var(--color-accent-dark);
-        text-decoration: underline;
-    }
-
-    /* Header Layout */
-    .header-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 1.5rem;
-    }
-
-    .header-row h1 {
-        margin: 0;
-        font-size: 1.5rem;
-        color: var(--color-text);
-    }
-
-    /* Table & Action Links */
-    .table-link {
-        color: var(--color-text);
-        font-weight: 600;
-    }
-
-    .table-link:hover {
-        color: var(--color-accent);
-        text-decoration: none;
-    }
-
-    .view-link {
-        font-size: 0.875rem;
-        padding: 0.25rem 0.6rem;
-        background-color: var(--color-bg);
-        border: 1px solid var(--color-border);
-        border-radius: 4px;
-        color: var(--color-text);
-        display: inline-block;
-    }
-
-    .view-link:hover {
-        background-color: #f0f0ec;
-        color: #000;
-        text-decoration: none;
-    }
-
-    .empty-state {
-        background: var(--color-surface);
-        border: 1px dashed var(--color-border);
-        padding: 2rem;
-        text-align: center;
-        color: var(--color-muted);
-        border-radius: 8px;
-    }
-</style>
-
-<div class="header-row">
-    <h1>Discounts</h1>
-    <a href="{% url 'discount_create' %}" class="btn button">+ Add Discount</a>
+    {% if discounts %}
+        <ul class="entity-list">
+            {% for discount in discounts %}
+                <li class="entity-item">
+                    <a href="{% url 'discount_detail' discount.pk %}" class="entity-link">
+                        <span>
+                            <span class="entity-link-main">{{ discount.name }}</span>
+                            <span class="entity-link-meta">
+                                {{ discount.percent_off }}% • {{ discount.start_date }} to {{ discount.end_date }}
+                            </span>
+                        </span>
+                        <span class="entity-link-arrow">&rarr;</span>
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <div class="entity-empty">
+            <p>No discounts yet.</p>
+        </div>
+    {% endif %}
 </div>
-{% if discounts %}
-<table>
-    <tr><th>Name</th><th>% Off</th><th>Start</th><th>End</th><th></th></tr>
-    {% for discount in discounts %}
-    <tr>
-        <td><a href="{% url 'discount_detail' discount.pk %}">{{ discount.name }}</a></td>
-        <td>{{ discount.percent_off }}%</td>
-        <td>{{ discount.start_date }}</td>
-        <td>{{ discount.end_date }}</td>
-        <td><a href="{% url 'discount_detail' discount.pk %}">View</a></td>
-    </tr>
-    {% endfor %}
-</table>
-{% else %}
-<p>No discounts yet.</p>
-{% endif %}
 {% endblock %}
