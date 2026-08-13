@@ -1,0 +1,29 @@
+{% extends 'store/base.html' %}
+{% block title %}New Sale{% endblock %}
+{% block content %}
+<h1>New Sale</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ header_form.as_p }}
+
+    {{ formset.management_form }}
+    <h2>Items</h2>
+    <table>
+        <tr>
+            <th>Product</th>
+            <th>Quantity</th>
+        </tr>
+        {% for line in formset %}
+        <tr>
+            <td>{{ line.product }}</td>
+            <td>{{ line.quantity }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <div class="actions">
+        <input type="submit" value="Complete Sale">
+        <a href="{% url 'sale_list' %}" class="button">&larr; Cancel</a>
+    </div>
+</form>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends 'store/base.html' %}
+{% block title %}Sale #{{ sale.sale_id }}{% endblock %}
+{% block content %}
+<h1>Sale #{{ sale.sale_id }}</h1>
+<p><strong>Date:</strong> {{ sale.sale_date|date:"d M Y, H:i" }}</p>
+<p><strong>Employee:</strong> {{ sale.employee }}</p>
+<p><strong>Customer:</strong> {{ sale.customer|default:"Walk-in" }}</p>
+<p><strong>Total:</strong> GHS {{ sale.total_amount }}</p>
+
+<h2>Items</h2>
+{% if items %}
+<table>
+    <tr>
+        <th>Product</th>
+        <th>Quantity</th>
+        <th>Discount</th>
+        <th>Line Total</th>
+    </tr>
+    {% for item in items %}
+    <tr>
+        <td>{{ item.product.name }}</td>
+        <td>{{ item.quantity }}</td>
+        <td>{{ item.discount|default:"—" }}</td>
+        <td>GHS {{ item.line_total }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p>No items recorded for this sale.</p>
+{% endif %}
+
+<div class="actions">
+    <a href="{% url 'sale_list' %}" class="button">&larr; Back to list</a>
+</div>
+{% endblock %}

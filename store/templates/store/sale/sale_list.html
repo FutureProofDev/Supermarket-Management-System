@@ -1,0 +1,32 @@
+{% extends 'store/base.html' %}
+{% block title %}Sales{% endblock %}
+{% block content %}
+<div class="header-row">
+    <h1>Sales</h1>
+    <a href="{% url 'checkout' %}" class="button">+ New Sale</a>
+</div>
+{% if sales %}
+<table>
+    <tr>
+        <th>Sale #</th>
+        <th>Date</th>
+        <th>Employee</th>
+        <th>Customer</th>
+        <th>Total</th>
+        <th></th>
+    </tr>
+    {% for sale in sales %}
+    <tr>
+        <td><a href="{% url 'sale_detail' sale.pk %}">#{{ sale.sale_id }}</a></td>
+        <td>{{ sale.sale_date|date:"d M Y, H:i" }}</td>
+        <td>{{ sale.employee }}</td>
+        <td>{{ sale.customer|default:"Walk-in" }}</td>
+        <td>GHS {{ sale.total_amount }}</td>
+        <td><a href="{% url 'sale_detail' sale.pk %}">View</a></td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p>No sales yet.</p>
+{% endif %}
+{% endblock %}
