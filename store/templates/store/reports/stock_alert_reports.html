@@ -1,0 +1,52 @@
+{% extends 'store/base.html' %}
+{% block title %}Stock Alerts{% endblock %}
+{% block content %}
+<h1>Stock Alerts</h1>
+<p style="color: var(--color-muted);">Reorder and markdown candidates as of {{ today|date:"d M Y" }}.</p>
+
+<h2 class="section-title">Low Stock (at or below reorder level)</h2>
+{% if low_stock %}
+<table>
+    <tr>
+        <th>Product</th>
+        <th>On Hand</th>
+        <th>Reorder Level</th>
+        <th>Supplier</th>
+        <th>Contact</th>
+    </tr>
+    {% for row in low_stock %}
+    <tr>
+        <td>{{ row.product.name }}</td>
+        <td>{{ row.quantity_on_hand }}</td>
+        <td>{{ row.reorder_level }}</td>
+        <td>{{ row.product.supplier.name }}</td>
+        <td>{{ row.product.supplier.contact_phone|default:row.product.supplier.email }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p>Nothing below reorder level right now.</p>
+{% endif %}
+
+<h2 class="section-title">Near Expiry (within 45 days)</h2>
+{% if near_expiry %}
+<table>
+    <tr>
+        <th>Product</th>
+        <th>Expiry Date</th>
+        <th>On Hand</th>
+        <th>Supplier</th>
+    </tr>
+    {% for product in near_expiry %}
+    <tr>
+        <td>{{ product.name }}</td>
+        <td>{{ product.expiry_date }}</td>
+        <td>{{ product.inventory_qty|default:0 }}</td>
+        <td>{{ product.supplier.name }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p>Nothing approaching expiry right now.</p>
+{% endif %}
+{% endblock %}
