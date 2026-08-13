@@ -1,0 +1,297 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block title %}Dynamic Search Engine - Essentials MS{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'store/css/search.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="search-container">
+    <div class="search-header">
+        <h1>Dynamic Search & Query Builder</h1>
+        <p>Search across store entities, filter relational dependencies, and sort result sets.</p>
+    </div>
+
+    <!-- Search Control Form -->
+    <div class="search-card">
+        <form method="get" action="{% url 'search_page' %}" id="search-form">
+            <div class="search-form-grid">
+                
+                <!-- Entity Selector -->
+                <div class="filter-group">
+                    <label for="entity">Target Entity</label>
+                    <select name="entity" id="entity" onchange="updateFilterVisibility()">
+                        <option value="products" {% if entity == 'products' %}selected{% endif %}>Products Catalog</option>
+                        <option value="sales" {% if entity == 'sales' %}selected{% endif %}>Sales Transactions</option>
+                        <option value="customers" {% if entity == 'customers' %}selected{% endif %}>Customers Directory</option>
+                        <option value="inventory" {% if entity == 'inventory' %}selected{% endif %}>Inventory On-Hand</option>
+                    </select>
+                </div>
+
+                <!-- Text Search Input -->
+                <div class="filter-group">
+                    <label for="q">Keyword Search</label>
+                    <input type="text" name="q" id="q" value="{{ query }}" placeholder="Search name, barcode, ID...">
+                </div>
+
+                <!-- Relational Filter: Category -->
+                <div class="filter-group entity-filter entity-products entity-inventory">
+                    <label for="category">Category</label>
+                    <select name="category" id="category">
+                        <option value="">-- All Categories --</option>
+                        {% for cat in categories %}
+                            <option value="{{ cat.pk }}" {% if category_id == cat.pk|stringformat:"i" %}selected{% endif %}>
+                                {{ cat.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Relational Filter: Supplier -->
+                <div class="filter-group entity-filter entity-products">
+                    <label for="supplier">Supplier</label>
+                    <select name="supplier" id="supplier">
+                        <option value="">-- All Suppliers --</option>
+                        {% for sup in suppliers %}
+                            <option value="{{ sup.pk }}" {% if supplier_id == sup.pk|stringformat:"i" %}selected{% endif %}>
+                                {{ sup.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Relational Filter: Employee -->
+                <div class="filter-group entity-filter entity-sales">
+                    <label for="employee">Employee</label>
+                    <select name="employee" id="employee">
+                        <option value="">-- All Employees --</option>
+                        {% for emp in employees %}
+                            <option value="{{ emp.pk }}" {% if employee_id == emp.pk|stringformat:"i" %}selected{% endif %}>
+                                {{ emp }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Date Range Filters -->
+                <div class="filter-group entity-filter entity-sales">
+                    <label for="date_from">From Date</label>
+                    <input type="date" name="date_from" id="date_from" value="{{ date_from }}">
+                </div>
+
+                <div class="filter-group entity-filter entity-sales">
+                    <label for="date_to">To Date</label>
+                    <input type="date" name="date_to" id="date_to" value="{{ date_to }}">
+                </div>
+
+                <!-- Low Stock Toggle -->
+                <div class="filter-group entity-filter entity-inventory">
+                    <label for="low_stock">Inventory Filter</label>
+                    <select name="low_stock" id="low_stock">
+                        <option value="">All Records</option>
+                        <option value="1" {% if low_stock == '1' %}selected{% endif %}>Low Stock Only (&le; Reorder Level)</option>
+                    </select>
+                </div>
+
+                <!-- Dynamic Sort Property -->
+                <div class="filter-group">
+                    <label for="sort_by">Sort Property</label>
+                    <select name="sort_by" id="sort_by">
+                        <!-- Populated dynamically via JS -->
+                    </select>
+                </div>
+
+                <!-- Sort Direction -->
+                <div class="filter-group">
+                    <label for="sort_dir">Sort Order</label>
+                    <select name="sort_dir" id="sort_dir">
+                        <option value="asc" {% if sort_dir == 'asc' %}selected{% endif %}>Ascending (&uarr;)</option>
+                        <option value="desc" {% if sort_dir == 'desc' %}selected{% endif %}>Descending (&darr;)</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <div class="search-actions">
+                <button type="submit" class="button">Apply Filter Query</button>
+                <a href="{% url 'search_page' %}" class="button secondary">Reset Query</a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Results Section -->
+    <div class="results-summary">
+        <h2>Query Results</h2>
+        <span class="badge">{{ result_count }} Record(s) Found</span>
+    </div>
+
+    {% if results %}
+        {% if entity == 'products' %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Barcode</th>
+                        <th>Product Name</th>
+                        <th>Category</th>
+                        <th>Supplier</th>
+                        <th>Price</th>
+                        <th>Expiry</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in results %}
+                    <tr>
+                        <td><code>{{ item.barcode }}</code></td>
+                        <td><a href="{% url 'product_detail' item.pk %}"><strong>{{ item.name }}</strong></a></td>
+                        <td>{{ item.category.name }}</td>
+                        <td>{{ item.supplier.name }}</td>
+                        <td>GHS {{ item.unit_price }}</td>
+                        <td>{{ item.expiry_date|default:"—" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+        {% elif entity == 'sales' %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Sale ID</th>
+                        <th>Date & Time</th>
+                        <th>Served By</th>
+                        <th>Customer</th>
+                        <th>Total Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for sale in results %}
+                    <tr>
+                        <td><strong>Sale #{{ sale.sale_id }}</strong></td>
+                        <td>{{ sale.sale_date|date:"Y-m-d H:i" }}</td>
+                        <td>{{ sale.employee }}</td>
+                        <td>{{ sale.customer|default:"Walk-in Customer" }}</td>
+                        <td><strong>GHS {{ sale.total_amount }}</strong></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+        {% elif entity == 'customers' %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Phone</th>
+                        <th>Email</th>
+                        <th>Loyalty Points</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for customer in results %}
+                    <tr>
+                        <td><a href="{% url 'customer_detail' customer.pk %}"><strong>{{ customer }}</strong></a></td>
+                        <td>{{ customer.phone|default:"N/A" }}</td>
+                        <td>{{ customer.email|default:"N/A" }}</td>
+                        <td>{{ customer.loyalty_card.points_balance|default:"0" }} pts</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+        {% elif entity == 'inventory' %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Product Name</th>
+                        <th>Category</th>
+                        <th>On Hand</th>
+                        <th>Reorder Threshold</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for inv in results %}
+                    <tr>
+                        <td><a href="{% url 'inventory_detail' inv.pk %}"><strong>{{ inv.product.name }}</strong></a></td>
+                        <td>{{ inv.product.category.name }}</td>
+                        <td><strong>{{ inv.quantity_on_hand }}</strong></td>
+                        <td>{{ inv.reorder_level }}</td>
+                        <td>
+                            {% if inv.quantity_on_hand <= inv.reorder_level %}
+                                <span style="color: var(--color-danger); font-weight: bold;">Low Stock</span>
+                            {% else %}
+                                <span style="color: var(--color-success);">Healthy</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    {% else %}
+        <div class="entity-empty">
+            <p>No matching records found for this filter combination.</p>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+    const sortOptionsMap = {
+        'products': [
+            { val: 'name', label: 'Product Name' },
+            { val: 'price', label: 'Unit Price' },
+            { val: 'expiry', label: 'Expiry Date' }
+        ],
+        'sales': [
+            { val: 'date', label: 'Transaction Date' },
+            { val: 'amount', label: 'Total Amount' },
+            { val: 'id', label: 'Sale ID' }
+        ],
+        'customers': [
+            { val: 'name', label: 'Last Name' },
+            { val: 'email', label: 'Email Address' }
+        ],
+        'inventory': [
+            { val: 'name', label: 'Product Name' },
+            { val: 'qty', label: 'Quantity On-Hand' },
+            { val: 'reorder', label: 'Reorder Level' }
+        ]
+    };
+
+    function updateFilterVisibility() {
+        const entitySelect = document.getElementById('entity');
+        const selectedEntity = entitySelect.value;
+
+        // Hide all conditional entity filters
+        document.querySelectorAll('.entity-filter').forEach(el => {
+            el.classList.add('hidden');
+        });
+
+        // Show filters matching selected entity
+        document.querySelectorAll('.entity-' + selectedEntity).forEach(el => {
+            el.classList.remove('hidden');
+        });
+
+        // Update Sort By options
+        const sortBySelect = document.getElementById('sort_by');
+        const currentSort = "{{ sort_by }}";
+        sortBySelect.innerHTML = '';
+
+        const options = sortOptionsMap[selectedEntity] || [];
+        options.forEach(opt => {
+            const optionEl = document.createElement('option');
+            optionEl.value = opt.val;
+            optionEl.textContent = opt.label;
+            if (opt.val === currentSort) {
+                optionEl.selected = true;
+            }
+            sortBySelect.appendChild(optionEl);
+        });
+    }
+
+    // Initialize visibility on page load
+    document.addEventListener('DOMContentLoaded', updateFilterVisibility);
+</script>
+{% endblock %}

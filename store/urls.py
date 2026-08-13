@@ -10,6 +10,9 @@ urlpatterns = urlpatterns = [
     # Central Directory
     path('register/', views.system_register, name='system_register'),
 
+    # Search URLs
+    path('search/', views.search_page, name='search_page'),
+
     #Sale URLs
     path('sales/', views.sale_list, name='sale_list'),
     path('sales/<int:pk>/', views.sale_detail, name='sale_detail'),
