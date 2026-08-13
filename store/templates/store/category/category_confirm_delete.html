@@ -2,72 +2,18 @@
 
 {% block title %}Delete {{ category.name }}{% endblock %}
 
-<style>
-    .form-container {
-        max-width: 600px;
-        margin: 2rem auto;
-        font-family: system-ui, -apple-system, sans-serif;
-    }
-
-    .form-header {
-        margin-bottom: 1.5rem;
-    }
-
-    .form-header h1 {
-        margin: 0;
-        font-size: 1.5rem;
-        color: #111827;
-    }
-
-    .form-actions {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        margin-top: 1.5rem;
-    }
-
-    .btn-submit {
-        background-color: #2563eb;
-        color: #ffffff;
-        padding: 0.5rem 1rem;
-        border: none;
-        border-radius: 6px;
-        font-size: 0.875rem;
-        font-weight: 500;
-        cursor: pointer;
-        transition: background-color 0.2s ease;
-    }
-
-    .btn-submit:hover {
-        background-color: #1d4ed8;
-    }
-
-    .btn-back {
-        display: inline-block;
-        background-color: #ffffff;
-        color: #374151;
-        padding: 0.5rem 1rem;
-        border: 1px solid #d1d5db;
-        border-radius: 6px;
-        text-decoration: none;
-        font-size: 0.875rem;
-        font-weight: 500;
-        transition: all 0.2s ease;
-    }
-
-    .btn-back:hover {
-        background-color: #f3f4f6;
-        color: #111827;
-        border-color: #9ca3af;
-    }
-</style>
-
 {% block content %}
-<h1>Delete "{{ category.name }}"?</h1>
-<p>This can't be undone.</p>
-<form method="post">
-    {% csrf_token %}
-    <button type="submit">Yes, delete</button>
-</form>
-<a href="{% url 'category_detail' category.pk %}">Cancel</a>
+<div class="entity-container">
+    <div class="entity-card">
+        <h1>Delete "{{ category.name }}"?</h1>
+        <p>This cannot be undone.</p>
+        <form method="post">
+            {% csrf_token %}
+            <div class="entity-form-actions">
+                <button type="submit" class="danger">Yes, delete</button>
+                <a href="{% url 'category_detail' category.pk %}" class="button secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
 {% endblock %}

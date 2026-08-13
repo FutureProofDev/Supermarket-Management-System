@@ -1,15 +1,29 @@
 {% extends 'store/base.html' %}
 {% block title %}{{ customer }}{% endblock %}
 {% block content %}
-<h1>{{ customer }}</h1>
-<p><strong>Phone:</strong> {{ customer.phone|default:"N/A" }}</p>
-<p><strong>Email:</strong> {{ customer.email|default:"N/A" }}</p>
-<p><strong>Loyalty card:</strong>
-    {% if customer.loyalty_card %}{{ customer.loyalty_card.points_balance }} points{% else %}No card{% endif %}
-</p>
-<div class="actions">
-    <a href="{% url 'customer_update' customer.pk %}" class="button">Edit</a>
-    <a href="{% url 'customer_delete' customer.pk %}" class="button danger">Delete</a>
-    <a href="{% url 'customer_list' %}" class="button">&larr; Back to list</a>
+<div class="entity-container">
+    <div class="entity-card">
+        <h1>{{ customer }}</h1>
+        <div class="entity-detail-row">
+            <span class="entity-detail-label">Phone</span>
+            <span class="entity-detail-value">{{ customer.phone|default:"N/A" }}</span>
+        </div>
+        <div class="entity-detail-row">
+            <span class="entity-detail-label">Email</span>
+            <span class="entity-detail-value">{{ customer.email|default:"N/A" }}</span>
+        </div>
+        <div class="entity-detail-row">
+            <span class="entity-detail-label">Loyalty card</span>
+            <span class="entity-detail-value">
+                {% if customer.loyalty_card %}{{ customer.loyalty_card.points_balance }} points{% else %}No card{% endif %}
+            </span>
+        </div>
+    </div>
+
+    <div class="entity-actions">
+        <a href="{% url 'customer_update' customer.pk %}" class="button">Edit</a>
+        <a href="{% url 'customer_delete' customer.pk %}" class="button danger">Delete</a>
+        <a href="{% url 'customer_list' %}" class="button secondary">&larr; Back to list</a>
+    </div>
 </div>
 {% endblock %}

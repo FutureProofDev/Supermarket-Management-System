@@ -1,13 +1,17 @@
 {% extends 'store/base.html' %}
 {% block title %}{{ title }}{% endblock %}
 {% block content %}
-<h1>{{ title }}</h1>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <div class="actions">
-        <input type="submit" value="Save">
-        <a href="{% url 'discount_list' %}" class="button">&larr; Back</a>
+<div class="entity-container">
+    <div class="entity-header">
+        <h1>{{ title }}</h1>
     </div>
-</form>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div class="entity-form-actions">
+            <input type="submit" value="Save">
+            <a href="{% url 'discount_list' %}" class="button secondary">&larr; Back</a>
+        </div>
+    </form>
+</div>
 {% endblock %}

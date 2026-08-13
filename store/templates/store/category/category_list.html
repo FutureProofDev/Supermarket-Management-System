@@ -3,103 +3,25 @@
 {% block title %}Categories{% endblock %}
 
 {% block content %}
-<style>
-    .categories-container {
-        max-width: 600px;
-        margin: 2rem auto;
-        font-family: system-ui, -apple-system, sans-serif;
-    }
-
-    .header-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 1.5rem;
-    }
-
-    .header-row h1 {
-        margin: 0;
-        font-size: 1.5rem;
-        color: #111827;
-    }
-
-    .btn-add {
-        background-color: #2563eb;
-        color: #ffffff;
-        padding: 0.5rem 1rem;
-        border-radius: 6px;
-        text-decoration: none;
-        font-size: 0.875rem;
-        font-weight: 500;
-        transition: background-color 0.2s ease;
-    }
-
-    .btn-add:hover {
-        background-color: #1d4ed8;
-    }
-
-    .category-list {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-        border: 1px solid #e5e7eb;
-        border-radius: 8px;
-        overflow: hidden;
-    }
-
-    .category-item {
-        border-bottom: 1px solid #e5e7eb;
-    }
-
-    .category-item:last-child {
-        border-bottom: none;
-    }
-
-    .category-link {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0.875rem 1.25rem;
-        color: #374151;
-        text-decoration: none;
-        font-weight: 500;
-        transition: background-color 0.15s ease;
-    }
-
-    .category-link:hover {
-        background-color: #f9fafb;
-        color: #2563eb;
-    }
-
-    .empty-state {
-        padding: 2rem;
-        text-align: center;
-        color: #6b7280;
-        background-color: #f9fafb;
-        border: 1px dashed #d1d5db;
-        border-radius: 8px;
-    }
-</style>
-
-<div class="categories-container">
-    <div class="header-row">
+<div class="entity-container">
+    <div class="entity-header">
         <h1>Categories</h1>
-        <a href="{% url 'category_create' %}" class="btn-add">+ Add Category</a>
+        <a href="{% url 'category_create' %}" class="button">+ Add Category</a>
     </div>
 
     {% if categories %}
-        <ul class="category-list">
+        <ul class="entity-list">
             {% for category in categories %}
-                <li class="category-item">
-                    <a href="{% url 'category_detail' category.pk %}" class="category-link">
-                        <span>{{ category.name }}</span>
-                        <span>&rarr;</span>
+                <li class="entity-item">
+                    <a href="{% url 'category_detail' category.pk %}" class="entity-link">
+                        <span class="entity-link-main">{{ category.name }}</span>
+                        <span class="entity-link-arrow">&rarr;</span>
                     </a>
                 </li>
             {% endfor %}
         </ul>
     {% else %}
-        <div class="empty-state">
+        <div class="entity-empty">
             <p>No categories yet.</p>
         </div>
     {% endif %}

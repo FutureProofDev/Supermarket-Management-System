@@ -1,11 +1,17 @@
 {% extends 'store/base.html' %}
 {% block title %}Delete {{ employee }}{% endblock %}
 {% block content %}
-<h1>Delete "{{ employee }}"?</h1>
-<p>This can't be undone.</p>
-<form method="post">
-    {% csrf_token %}
-    <button type="submit" class="danger">Yes, delete</button>
-    <a href="{% url 'employee_detail' employee.pk %}" class="button">Cancel</a>
-</form>
+<div class="entity-container">
+    <div class="entity-card">
+        <h1>Delete "{{ employee }}"?</h1>
+        <p>This cannot be undone.</p>
+        <form method="post">
+            {% csrf_token %}
+            <div class="entity-form-actions">
+                <button type="submit" class="danger">Yes, delete</button>
+                <a href="{% url 'employee_detail' employee.pk %}" class="button secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
 {% endblock %}
