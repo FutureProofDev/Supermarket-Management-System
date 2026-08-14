@@ -1,0 +1,103 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In - Essentials MS</title>
+
+    <!-- Global Stylesheets -->
+    <link rel="stylesheet" href="{% static 'store/css/general.css' %}">
+    <link rel="stylesheet" href="{% static 'store/css/crud.css' %}">
+</head>
+
+<body>
+    <!-- Minimalist Brand Header -->
+    <nav>
+        <a href="{% url 'login' %}" class="nav-brand">Essentials MS</a>
+
+        <button id="dark-mode-toggle" class="toggle-dark-mode" type="button" aria-label="Switch to dark mode" style="margin-left: auto;">☾</button>
+    </nav>
+
+    <!-- Flash Messages (e.g. Logout success notifications) -->
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    <main>
+        <div class="entity-container" style="max-width: 420px; margin-top: 3.5rem;">
+            <div class="entity-card" style="padding: 2.25rem 2rem; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);">
+                <div style="text-align: center; margin-bottom: 1.75rem;">
+                    <h1 style="font-size: 1.75rem; margin-bottom: 0.35rem;">Sign In</h1>
+                    <p style="color: var(--color-muted); font-size: 0.9rem; margin: 0;">Access your supermarket terminal session</p>
+                </div>
+
+                {% if form.errors %}
+                    <div style="background: var(--color-message-error-bg); border: 1px solid var(--color-message-error-border); color: var(--color-danger); padding: 0.65rem 0.9rem; border-radius: 6px; margin-bottom: 1.25rem; font-size: 0.9rem;">
+                        Invalid username or password. Please verify your credentials.
+                    </div>
+                {% endif %}
+
+                <form method="post" action="{% url 'login' %}">
+                    {% csrf_token %}
+                    {% if next %}
+                        <input type="hidden" name="next" value="{{ next }}">
+                    {% endif %}
+
+                    <p>
+                        <label for="id_username">Username</label>
+                        <input type="text" name="username" autofocus required id="id_username" placeholder="e.g. kwesi, yaw, ama">
+                    </p>
+                    <p>
+                        <label for="id_password">Password</label>
+                        <input type="password" name="password" required id="id_password" placeholder="••••••••">
+                    </p>
+
+                    <div style="margin-top: 1.75rem;">
+                        <button type="submit" style="width: 100%; padding: 0.65rem 1rem; font-size: 0.95rem;">Sign In</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        (function () {
+            const storageKey = "store-theme";
+            const darkModeClass = "dark-mode";
+            const darkModeToggle = document.getElementById("dark-mode-toggle");
+
+            if (!darkModeToggle) return;
+
+            const savedTheme = localStorage.getItem(storageKey);
+            if (savedTheme === "dark") {
+                document.body.classList.add(darkModeClass);
+            }
+
+            function updateToggleVisualState() {
+                const isDarkMode = document.body.classList.contains(darkModeClass);
+                darkModeToggle.textContent = isDarkMode ? "☼" : "☾";
+                darkModeToggle.setAttribute(
+                    "aria-label",
+                    isDarkMode ? "Switch to light mode" : "Switch to dark mode"
+                );
+            }
+
+            updateToggleVisualState();
+
+            darkModeToggle.addEventListener("click", function () {
+                document.body.classList.toggle(darkModeClass);
+                const currentTheme = document.body.classList.contains(darkModeClass) ? "dark" : "light";
+                localStorage.setItem(storageKey, currentTheme);
+                updateToggleVisualState();
+            });
+        })();
+    </script>
+</body>
+
+</html>

@@ -86,3 +86,65 @@ class SaleLineForm(forms.Form):
 
 
 SaleLineFormSet = formset_factory(SaleLineForm, extra=5)
+
+
+
+from django import forms
+from django.forms import formset_factory
+from .models import Customer, Product
+
+
+class ProductChoiceField(forms.ModelChoiceField):
+    def label_from_instance(self, obj):
+        # Displays name, unit price, and live quantity in the select dropdown
+        qty = obj.inventory.quantity_on_hand if hasattr(obj, 'inventory') else 0
+        return f"{obj.name} — GHS {obj.unit_price:.2f} ({qty} in stock)"
+
+
+class ProductChoiceField(forms.ModelChoiceField):
+    def label_from_instance(self, obj):
+        qty = obj.inventory.quantity_on_hand if hasattr(obj, 'inventory') else 0
+        expiry_badge = " [PROMO: 50% Near-Expiry]" if obj.is_near_expiry() else ""
+        return f"{obj.name} — GHS {obj.unit_price:.2f} ({qty} in stock){expiry_badge}"
+
+
+class SaleHeaderForm(forms.Form):
+    customer = forms.ModelChoiceField(
+        queryset=Customer.objects.all().order_by('last_name', 'first_name'),
+        required=False,
+        empty_label="-- Walk-in Customer (No Loyalty Card) --",
+        widget=forms.Select(attrs={'class': 'form-control', 'id': 'customer-select'})
+    )
+    discount = forms.ModelChoiceField(
+        queryset=Discount.objects.none(),
+        required=False,
+        empty_label="-- No Promotional Discount --",
+        widget=forms.Select(attrs={'class': 'form-control', 'id': 'discount-select'})
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        today = timezone.localdate()
+        # Only show valid, currently active discounts
+        self.fields['discount'].queryset = Discount.objects.filter(
+            start_date__lte=today,
+            end_date__gte=today
+        ).order_by('-percent_off')
+
+
+class SaleLineForm(forms.Form):
+    product = ProductChoiceField(
+        queryset=Product.objects.select_related('inventory').order_by('name'),
+        required=False,
+        empty_label="-- Select Product --",
+        widget=forms.Select(attrs={'class': 'form-control product-select'})
+    )
+    quantity = forms.IntegerField(
+        min_value=1,
+        initial=1,
+        required=False,
+        widget=forms.NumberInput(attrs={'class': 'form-control qty-input', 'min': '1', 'placeholder': 'Qty'})
+    )
+
+
+SaleLineFormSet = formset_factory(SaleLineForm, extra=1)

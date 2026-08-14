@@ -1,35 +1,115 @@
 {% extends 'store/base.html' %}
-{% block title %}Sale #{{ sale.sale_id }}{% endblock %}
+
+{% block title %}Sale #{{ sale.sale_id }} Receipt{% endblock %}
+
 {% block content %}
-<h1>Sale #{{ sale.sale_id }}</h1>
-<p><strong>Date:</strong> {{ sale.sale_date|date:"d M Y, H:i" }}</p>
-<p><strong>Employee:</strong> {{ sale.employee }}</p>
-<p><strong>Customer:</strong> {{ sale.customer|default:"Walk-in" }}</p>
-<p><strong>Total:</strong> GHS {{ sale.total_amount }}</p>
+<div class="entity-container" style="max-width: 750px; margin: 2rem auto;">
+    <div class="entity-card" style="padding: 2rem;">
+        
+        <!-- Header -->
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem; border-bottom: 2px solid var(--color-border); padding-bottom: 1rem;">
+            <div>
+                <h1 style="font-size: 1.75rem; margin-bottom: 0.25rem;">Transaction Receipt #{{ sale.sale_id }}</h1>
+                <p style="color: var(--color-muted); margin: 0; font-size: 0.9rem;">
+                    {{ sale.sale_date|date:"l, d F Y - H:i:s" }}
+                </p>
+            </div>
+            <span class="badge" style="background: var(--color-message-success-bg); color: var(--color-accent); font-size: 0.9rem; padding: 0.4rem 0.8rem; border-color: var(--color-message-success-border);">
+                ✓ Transaction Finalized
+            </span>
+        </div>
 
-<h2>Items</h2>
-{% if items %}
-<table>
-    <tr>
-        <th>Product</th>
-        <th>Quantity</th>
-        <th>Discount</th>
-        <th>Line Total</th>
-    </tr>
-    {% for item in items %}
-    <tr>
-        <td>{{ item.product.name }}</td>
-        <td>{{ item.quantity }}</td>
-        <td>{{ item.discount|default:"—" }}</td>
-        <td>GHS {{ item.line_total }}</td>
-    </tr>
-    {% endfor %}
-</table>
-{% else %}
-<p>No items recorded for this sale.</p>
-{% endif %}
+        <div class="entity-detail-row">
+            <span class="entity-detail-label">Cashier</span>
+            <span class="entity-detail-value">{{ sale.employee }}</span>
+        </div>
+        <div class="entity-detail-row">
+            <span class="entity-detail-label">Customer Profile</span>
+            <span class="entity-detail-value">{{ sale.customer|default:"Walk-in Customer" }}</span>
+        </div>
+        {% if sale.customer and sale.customer.loyalty_card %}
+        <div class="entity-detail-row">
+            <span class="entity-detail-label">Loyalty Balance</span>
+            <span class="entity-detail-value" style="color: var(--color-accent); font-weight: 700;">
+                {{ sale.customer.loyalty_card.points_balance }} Points Available
+            </span>
+        </div>
+        {% endif %}
 
-<div class="actions">
-    <a href="{% url 'sale_list' %}" class="button">&larr; Back to list</a>
+        <!-- Line Items -->
+        <h2 style="font-size: 1.2rem; margin: 1.75rem 0 0.75rem;">Purchased Items</h2>
+        <table style="width: 100%; margin-bottom: 1.5rem;">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Qty</th>
+                    <th>Base Price</th>
+                    <th>Discount</th>
+                    <th style="text-align: right;">Line Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                <tr>
+                    <td><strong>{{ item.product.name }}</strong></td>
+                    <td>{{ item.quantity }}</td>
+                    <td>GH₵ {{ item.product.unit_price }}</td>
+                    <td>
+                        {% if item.discount %}
+                            <span class="badge" style="font-size: 0.75rem;">{{ item.discount.name }} (-{{ item.discount.percent_off }}%)</span>
+                        {% elif item.product.is_near_expiry %}
+                            <span class="badge" style="color: var(--color-danger); border-color: var(--color-danger); font-size: 0.75rem;">Near Expiry (-50%)</span>
+                        {% else %}
+                            <span style="color: var(--color-muted);">—</span>
+                        {% endif %}
+                    </td>
+                    <td style="text-align: right; font-weight: 600;">GH₵ {{ item.line_total }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Total Paid Card -->
+        <div style="background: var(--color-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--color-border); text-align: right; margin-bottom: 1.5rem;">
+            <div style="font-size: 0.85rem; color: var(--color-muted); text-transform: uppercase; letter-spacing: 0.05em;">Total Charged</div>
+            <div style="font-size: 2.2rem; font-weight: 800; color: var(--color-accent);">
+                GH₵ {{ sale.total_amount }}
+            </div>
+        </div>
+
+        <!-- Visual Stock Deduction Audit (Perfect for Demonstration) -->
+        {% if stock_audit %}
+        <div style="background: var(--color-surface); border: 1px dashed var(--color-accent); padding: 1.25rem; border-radius: 8px; margin-bottom: 1.5rem;">
+            <h3 style="font-size: 1rem; color: var(--color-accent); margin: 0 0 0.5rem 0;">
+                ⚡ Database Integrity Verification (Stock Deductions)
+            </h3>
+            <table style="font-size: 0.85rem; margin: 0;">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Pre-Sale Stock</th>
+                        <th>Sold</th>
+                        <th>Current On-Hand</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in stock_audit %}
+                    <tr>
+                        <td>{{ row.product_name }}</td>
+                        <td>{{ row.old_stock }}</td>
+                        <td style="color: var(--color-danger); font-weight: bold;">-{{ row.deducted }}</td>
+                        <td><strong>{{ row.new_stock }}</strong></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="entity-actions" style="justify-content: space-between;">
+        <a href="{% url 'home' %}" class="button secondary">&larr; Return to Dashboard</a>
+        <a href="{% url 'checkout' %}" class="button">+ Start Next POS Transaction</a>
+    </div>
 </div>
 {% endblock %}

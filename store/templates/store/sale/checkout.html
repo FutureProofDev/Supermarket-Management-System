@@ -1,29 +1,232 @@
 {% extends 'store/base.html' %}
-{% block title %}New Sale{% endblock %}
+
+{% block title %}Record Sale (POS) - Essentials MS{% endblock %}
+
 {% block content %}
-<h1>New Sale</h1>
-<form method="post">
-    {% csrf_token %}
-    {{ header_form.as_p }}
-
-    {{ formset.management_form }}
-    <h2>Items</h2>
-    <table>
-        <tr>
-            <th>Product</th>
-            <th>Quantity</th>
-        </tr>
-        {% for line in formset %}
-        <tr>
-            <td>{{ line.product }}</td>
-            <td>{{ line.quantity }}</td>
-        </tr>
-        {% endfor %}
-    </table>
-
-    <div class="actions">
-        <input type="submit" value="Complete Sale">
-        <a href="{% url 'sale_list' %}" class="button">&larr; Cancel</a>
+<div class="entity-container" style="max-width: 900px; margin: 1.5rem auto;">
+    <div class="entity-header">
+        <div>
+            <h1>Point of Sale Checkout</h1>
+            <p style="color: var(--color-muted); margin: 0.25rem 0 0;">
+                Cashier: <strong>{{ employee }}</strong> &bull; Date: <strong>{% now "d M Y, H:i" %}</strong>
+            </p>
+        </div>
+        <a href="{% url 'home' %}" class="button secondary">&larr; Back to Dashboard</a>
     </div>
-</form>
+
+    <div class="entity-card" style="padding: 1.75rem;">
+        <form method="post" id="pos-checkout-form">
+            {% csrf_token %}
+
+            <!-- Header Parameters Grid (Customer & Discount Code) -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; background: var(--color-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--color-border);">
+                <div>
+                    <label for="customer-select" style="font-weight: 600; display: block; margin-bottom: 0.35rem;">
+                        Customer Profile (Loyalty Earning)
+                    </label>
+                    {{ header_form.customer }}
+                </div>
+                <div>
+                    <label for="discount-select" style="font-weight: 600; display: block; margin-bottom: 0.35rem;">
+                        Store Campaign Discount
+                    </label>
+                    {{ header_form.discount }}
+                </div>
+            </div>
+
+            <!-- Items Table -->
+            {{ formset.management_form }}
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--color-border); padding-bottom: 0.5rem; margin-bottom: 0.75rem;">
+                <h2 style="font-size: 1.2rem; margin: 0;">Cart Items</h2>
+                <button type="button" id="add-item-btn" class="button" style="padding: 0.35rem 0.85rem; font-size: 0.85rem;">
+                    + Add Product Line
+                </button>
+            </div>
+
+            <table style="width: 100%; margin-bottom: 1rem;" id="pos-table">
+                <thead>
+                    <tr>
+                        <th style="width: 48%;">Product</th>
+                        <th style="width: 18%;">Unit Price</th>
+                        <th style="width: 16%;">Qty</th>
+                        <th style="width: 18%; text-align: right;">Line Total</th>
+                        <th style="width: 50px; text-align: center;"></th>
+                    </tr>
+                </thead>
+                <tbody id="pos-tbody">
+                    {% for form in formset %}
+                    <tr class="pos-row">
+                        <td style="padding: 0.5rem 0.6rem;">
+                            {{ form.product }}
+                            {% if form.product.errors %}
+                                <div style="color: var(--color-danger); font-size: 0.8rem;">{{ form.product.errors }}</div>
+                            {% endif %}
+                        </td>
+                        <td style="padding: 0.5rem 0.6rem; color: var(--color-muted);" class="row-unit-price">
+                            —
+                        </td>
+                        <td style="padding: 0.5rem 0.6rem;">
+                            {{ form.quantity }}
+                            {% if form.quantity.errors %}
+                                <div style="color: var(--color-danger); font-size: 0.8rem;">{{ form.quantity.errors }}</div>
+                            {% endif %}
+                        </td>
+                        <td style="padding: 0.5rem 0.6rem; text-align: right; font-weight: 600;" class="row-line-total">
+                            GH₵ 0.00
+                        </td>
+                        <td style="padding: 0.5rem 0.6rem; text-align: center;">
+                            <button type="button" class="button danger remove-row-btn" style="padding: 0.2rem 0.5rem; font-size: 0.8rem;">✕</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <!-- Live Total Calculation Card -->
+            <div style="background: var(--color-bg); padding: 1.25rem; border-radius: 8px; border: 1px solid var(--color-border); margin-bottom: 1.5rem;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.4rem; font-size: 0.95rem;">
+                    <span style="color: var(--color-muted);">Cart Subtotal:</span>
+                    <strong id="summary-subtotal">GH₵ 0.00</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.4rem; font-size: 0.95rem; color: var(--color-success);" id="discount-indicator-row">
+                    <span>Active Discount Savings:</span>
+                    <strong id="summary-discount">- GH₵ 0.00</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; border-top: 1px solid var(--color-border); padding-top: 0.6rem; font-size: 1.4rem; font-weight: 800; color: var(--color-accent);">
+                    <span>Final Total Due:</span>
+                    <span id="summary-grand-total">GH₵ 0.00</span>
+                </div>
+            </div>
+
+            <!-- Action Controls -->
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <a href="{% url 'home' %}" class="button secondary">Cancel Transaction</a>
+                <button type="submit" style="padding: 0.75rem 2rem; font-size: 1.05rem; font-weight: 700;">
+                    Complete Sale &amp; Update Inventory &rarr;
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+const productsCatalog = {{ product_data_json|safe }};
+const discountsCatalog = {{ discount_data_json|safe }};
+
+document.addEventListener('DOMContentLoaded', function () {
+    const tbody = document.getElementById('pos-tbody');
+    const addBtn = document.getElementById('add-item-btn');
+    const totalFormsInput = document.getElementById('id_form-TOTAL_FORMS');
+    const discountSelect = document.getElementById('discount-select');
+
+    function calculateRunningTotals() {
+        let rawSubtotal = 0;
+        let totalDiscountSavings = 0;
+
+        const promoDiscountId = discountSelect ? discountSelect.value : "";
+        const promoPercent = (promoDiscountId && discountsCatalog[promoDiscountId]) ? discountsCatalog[promoDiscountId] : 0;
+
+        const rows = tbody.querySelectorAll('.pos-row');
+        rows.forEach(row => {
+            const prodSelect = row.querySelector('.product-select');
+            const qtyInput = row.querySelector('.qty-input');
+            const unitPriceCell = row.querySelector('.row-unit-price');
+            const lineTotalCell = row.querySelector('.row-line-total');
+
+            const prodId = prodSelect ? prodSelect.value : "";
+            const qty = parseInt(qtyInput ? qtyInput.value : 1) || 0;
+
+            if (prodId && productsCatalog[prodId]) {
+                const item = productsCatalog[prodId];
+                const basePrice = item.price;
+                const lineBase = basePrice * qty;
+
+                unitPriceCell.textContent = `GH₵ ${basePrice.toFixed(2)}`;
+
+                let finalLineTotal = lineBase;
+                if (item.is_near_expiry) {
+                    finalLineTotal = lineBase * 0.50; // 50% markdown
+                    unitPriceCell.innerHTML = `<span style="text-decoration: line-through;">GH₵ ${basePrice.toFixed(2)}</span> <strong style="color: var(--color-danger);">GH₵ ${(basePrice * 0.5).toFixed(2)}</strong>`;
+                } else if (promoPercent > 0) {
+                    finalLineTotal = lineBase * (1 - (promoPercent / 100));
+                }
+
+                const lineSavings = lineBase - finalLineTotal;
+                totalDiscountSavings += lineSavings;
+                rawSubtotal += lineBase;
+
+                lineTotalCell.textContent = `GH₵ ${finalLineTotal.toFixed(2)}`;
+            } else {
+                unitPriceCell.textContent = "—";
+                lineTotalCell.textContent = "GH₵ 0.00";
+            }
+        });
+
+        let grandTotal = rawSubtotal - totalDiscountSavings;
+        // Check 15% bulk volume loyalty threshold (> GHS 1,000)
+        if (grandTotal > 1000) {
+            const bulkSavings = grandTotal * 0.15;
+            totalDiscountSavings += bulkSavings;
+            grandTotal = grandTotal * 0.85;
+        }
+
+        document.getElementById('summary-subtotal').textContent = `GH₵ ${rawSubtotal.toFixed(2)}`;
+        document.getElementById('summary-discount').textContent = `- GH₵ ${totalDiscountSavings.toFixed(2)}`;
+        document.getElementById('summary-grand-total').textContent = `GH₵ ${grandTotal.toFixed(2)}`;
+    }
+
+    // Event listener delegation for live row updates
+    tbody.addEventListener('change', calculateRunningTotals);
+    tbody.addEventListener('input', calculateRunningTotals);
+    if (discountSelect) discountSelect.addEventListener('change', calculateRunningTotals);
+
+    // Add row dynamically
+    addBtn.addEventListener('click', function () {
+        const rows = tbody.querySelectorAll('.pos-row');
+        const lastRow = rows[rows.length - 1];
+        const newRow = lastRow.cloneNode(true);
+
+        const select = newRow.querySelector('.product-select');
+        const input = newRow.querySelector('.qty-input');
+        if (select) select.value = "";
+        if (input) input.value = "1";
+
+        newRow.querySelectorAll('.errorlist, [style*="color: var(--color-danger)"]').forEach(el => el.remove());
+        tbody.appendChild(newRow);
+
+        updateFormIndices();
+        calculateRunningTotals();
+    });
+
+    // Remove row dynamically
+    tbody.addEventListener('click', function (e) {
+        if (e.target.closest('.remove-row-btn')) {
+            const rows = tbody.querySelectorAll('.pos-row');
+            if (rows.length > 1) {
+                e.target.closest('.pos-row').remove();
+                updateFormIndices();
+                calculateRunningTotals();
+            } else {
+                const row = rows[0];
+                row.querySelector('.product-select').value = "";
+                row.querySelector('.qty-input').value = "1";
+                calculateRunningTotals();
+            }
+        }
+    });
+
+    function updateFormIndices() {
+        const rows = tbody.querySelectorAll('.pos-row');
+        rows.forEach((row, idx) => {
+            row.querySelectorAll('input, select').forEach(el => {
+                if (el.name) el.name = el.name.replace(/form-\d+-/, `form-${idx}-`);
+                if (el.id) el.id = el.id.replace(/id_form-\d+-/, `id_form-${idx}-`);
+            });
+        });
+        totalFormsInput.value = rows.length;
+    }
+
+    calculateRunningTotals();
+});
+</script>
 {% endblock %}

@@ -11,3 +11,4 @@ from .loyalty_card import *
 from .reports import *
 from .sale import *
 from .search import *
+from .authentication import *

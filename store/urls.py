@@ -4,6 +4,11 @@ from store import views
 
 
 urlpatterns = urlpatterns = [
+    # Authentication
+    path('login/', views.login_view, name='login'),
+    path('logout/', views.logout_view, name='logout'),
+    
+    
     # Server landing page (root URL)
     path('', views.home_view, name='home'),
 
