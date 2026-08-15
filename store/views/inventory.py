@@ -5,28 +5,20 @@ from ..models import Inventory
 from ..forms import InventoryForm
 from django.contrib.auth.decorators import permission_required
 
-@permission_required('store.add_inventory', raise_exception=True)
-def inventory_create(request):
-    ...
 
-@permission_required('store.change_inventory', raise_exception=True)
-def inventory_update(request, pk):
-    ...
-
-@permission_required('store.delete_inventory', raise_exception=True)
-def inventory_delete(request, pk):
-    ...
-
+@permission_required('store.view_inventory', raise_exception=True)
 def inventory_list(request):
     inventory = Inventory.objects.select_related('product').order_by('product__name')
     return render(request, 'store/inventory/inventory_list.html', {'inventory': inventory})
 
 
+@permission_required('store.view_inventory', raise_exception=True)
 def inventory_detail(request, pk):
     item = get_object_or_404(Inventory, pk=pk)
     return render(request, 'store/inventory/inventory_detail.html', {'item': item})
 
 
+@permission_required('store.add_inventory', raise_exception=True)
 def inventory_create(request):
     if request.method == 'POST':
         form = InventoryForm(request.POST)
@@ -39,6 +31,7 @@ def inventory_create(request):
     return render(request, 'store/inventory/inventory_form.html', {'form': form, 'title': 'Add Inventory Record'})
 
 
+@permission_required('store.change_inventory', raise_exception=True)
 def inventory_update(request, pk):
     item = get_object_or_404(Inventory, pk=pk)
     if request.method == 'POST':
@@ -52,6 +45,7 @@ def inventory_update(request, pk):
     return render(request, 'store/inventory/inventory_form.html', {'form': form, 'title': 'Edit Inventory Record'})
 
 
+@permission_required('store.delete_inventory', raise_exception=True)
 def inventory_delete(request, pk):
     # Inventory has no incoming FKs from anything else. Nothing points to an Inventory row, so ProtectedError can't happen here.
     item = get_object_or_404(Inventory, pk=pk)

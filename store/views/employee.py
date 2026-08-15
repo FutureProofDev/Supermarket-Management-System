@@ -5,28 +5,20 @@ from ..models import Employee
 from ..forms import EmployeeForm
 from django.contrib.auth.decorators import permission_required
 
-@permission_required('store.add_employee', raise_exception=True)
-def employee_create(request):
-    ...
 
-@permission_required('store.change_employee', raise_exception=True)
-def employee_update(request, pk):
-    ...
-
-@permission_required('store.delete_employee', raise_exception=True)
-def employee_delete(request, pk):
-    ...
-
+@permission_required('store.view_employee', raise_exception=True)
 def employee_list(request):
     employees = Employee.objects.all().order_by('last_name', 'first_name')
     return render(request, 'store/employee/employee_list.html', {'employees': employees})
 
 
+@permission_required('store.view_employee', raise_exception=True)
 def employee_detail(request, pk):
     employee = get_object_or_404(Employee, pk=pk)
     return render(request, 'store/employee/employee_detail.html', {'employee': employee})
 
 
+@permission_required('store.add_employee', raise_exception=True)
 def employee_create(request):
     if request.method == 'POST':
         form = EmployeeForm(request.POST)
@@ -39,6 +31,7 @@ def employee_create(request):
     return render(request, 'store/employee/employee_form.html', {'form': form, 'title': 'Add Employee'})
 
 
+@permission_required('store.change_employee', raise_exception=True)
 def employee_update(request, pk):
     employee = get_object_or_404(Employee, pk=pk)
     if request.method == 'POST':
@@ -52,6 +45,7 @@ def employee_update(request, pk):
     return render(request, 'store/employee/employee_form.html', {'form': form, 'title': 'Edit Employee'})
 
 
+@permission_required('store.delete_employee', raise_exception=True)
 def employee_delete(request, pk):
     employee = get_object_or_404(Employee, pk=pk)
     if request.method == 'POST':

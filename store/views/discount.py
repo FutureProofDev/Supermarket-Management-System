@@ -6,28 +6,19 @@ from ..forms import DiscountForm
 from django.contrib.auth.decorators import permission_required
 
 
-@permission_required('store.add_discount', raise_exception=True)
-def discount_create(request):
-    ...
-
-@permission_required('store.change_discount', raise_exception=True)
-def discount_update(request, pk):
-    ...
-
-@permission_required('store.delete_discount', raise_exception=True)
-def discount_delete(request, pk):
-    ...
-
+@permission_required('store.view_discount', raise_exception=True)
 def discount_list(request):
     discounts = Discount.objects.all().order_by('-start_date')
     return render(request, 'store/discount/discount_list.html', {'discounts': discounts})
 
 
+@permission_required('store.view_discount', raise_exception=True)
 def discount_detail(request, pk):
     discount = get_object_or_404(Discount, pk=pk)
     return render(request, 'store/discount/discount_detail.html', {'discount': discount})
 
 
+@permission_required('store.add_discount', raise_exception=True)
 def discount_create(request):
     if request.method == 'POST':
         form = DiscountForm(request.POST)
@@ -40,6 +31,7 @@ def discount_create(request):
     return render(request, 'store/discount/discount_form.html', {'form': form, 'title': 'Add Discount'})
 
 
+@permission_required('store.change_discount', raise_exception=True)
 def discount_update(request, pk):
     discount = get_object_or_404(Discount, pk=pk)
     if request.method == 'POST':
@@ -53,6 +45,7 @@ def discount_update(request, pk):
     return render(request, 'store/discount/discount_form.html', {'form': form, 'title': 'Edit Discount'})
 
 
+@permission_required('store.delete_discount', raise_exception=True)
 def discount_delete(request, pk):
     # SaleItem.discount is SET_NULL. Deleting a discount never raises
     # ProtectedError, it just nulls the discount on past sale items.

@@ -2,30 +2,22 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from ..models import Customer
 from ..forms import CustomerForm
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import permission_required
 
-@permission_required('store.add_customer', raise_exception=True)
-def customer_create(request):
-    ...
 
-@permission_required('store.change_customer', raise_exception=True)
-def customer_update(request, pk):
-    ...
-
-@permission_required('store.delete_customer', raise_exception=True)
-def customer_delete(request, pk):
-    ...
-
+@permission_required('store.view_customer', raise_exception=True)
 def customer_list(request):
     customers = Customer.objects.all().order_by('last_name', 'first_name')
     return render(request, 'store/customer/customer_list.html', {'customers': customers})
 
 
+@permission_required('store.view_customer', raise_exception=True)
 def customer_detail(request, pk):
     customer = get_object_or_404(Customer, pk=pk)
     return render(request, 'store/customer/customer_detail.html', {'customer': customer})
 
 
+@permission_required('store.add_customer', raise_exception=True)
 def customer_create(request):
     if request.method == 'POST':
         form = CustomerForm(request.POST)
@@ -38,6 +30,7 @@ def customer_create(request):
     return render(request, 'store/customer/customer_form.html', {'form': form, 'title': 'Add Customer'})
 
 
+@permission_required('store.change_customer', raise_exception=True)
 def customer_update(request, pk):
     customer = get_object_or_404(Customer, pk=pk)
     if request.method == 'POST':
@@ -51,9 +44,11 @@ def customer_update(request, pk):
     return render(request, 'store/customer/customer_form.html', {'form': form, 'title': 'Edit Customer'})
 
 
+@permission_required('store.delete_customer', raise_exception=True)
 def customer_delete(request, pk):
-    # No try/except ProtectedError needed here.  Sale.customer is  SET_NULL and LoyaltyCard.customer is CASCADE. Deleting a customer
-    # never raises ProtectedError; it just nulls out their sales and deletes their loyalty card automatically.
+    # No try/except ProtectedError needed here. Sale.customer is SET_NULL and
+    # LoyaltyCard.customer is CASCADE. Deleting a customer never raises
+    # ProtectedError; it just nulls out their sales and deletes their loyalty card automatically.
     customer = get_object_or_404(Customer, pk=pk)
     if request.method == 'POST':
         customer.delete()

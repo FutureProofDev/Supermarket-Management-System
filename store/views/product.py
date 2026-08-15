@@ -5,28 +5,20 @@ from ..models import Product
 from ..forms import ProductForm
 from django.contrib.auth.decorators import permission_required
 
-@permission_required('store.add_product', raise_exception=True)
-def product_create(request):
-    ...
 
-@permission_required('store.change_product', raise_exception=True)
-def product_update(request, pk):
-    ...
-
-@permission_required('store.delete_product', raise_exception=True)
-def product_delete(request, pk):
-    ...
-
+@permission_required('store.view_product', raise_exception=True)
 def product_list(request):
     products = Product.objects.select_related('category', 'supplier').order_by('name')
     return render(request, 'store/product/product_list.html', {'products': products})
 
 
+@permission_required('store.view_product', raise_exception=True)
 def product_detail(request, pk):
     product = get_object_or_404(Product, pk=pk)
     return render(request, 'store/product/product_detail.html', {'product': product})
 
 
+@permission_required('store.add_product', raise_exception=True)
 def product_create(request):
     if request.method == 'POST':
         form = ProductForm(request.POST)
@@ -39,6 +31,7 @@ def product_create(request):
     return render(request, 'store/product/product_form.html', {'form': form, 'title': 'Add Product'})
 
 
+@permission_required('store.change_product', raise_exception=True)
 def product_update(request, pk):
     product = get_object_or_404(Product, pk=pk)
     if request.method == 'POST':
@@ -52,6 +45,7 @@ def product_update(request, pk):
     return render(request, 'store/product/product_form.html', {'form': form, 'title': 'Edit Product'})
 
 
+@permission_required('store.delete_product', raise_exception=True)
 def product_delete(request, pk):
     product = get_object_or_404(Product, pk=pk)
     if request.method == 'POST':

@@ -4,28 +4,20 @@ from ..models import PurchaseOrder
 from ..forms import PurchaseOrderForm
 from django.contrib.auth.decorators import permission_required
 
-@permission_required('store.add_purchaseorder', raise_exception=True)
-def purchaseorder_create(request):
-    ...
 
-@permission_required('store.change_purchaseorder', raise_exception=True)
-def purchaseorder_update(request, pk):
-    ...
-
-@permission_required('store.delete_purchaseorder', raise_exception=True)
-def purchaseorder_delete(request, pk):
-    ...
-
+@permission_required('store.view_purchaseorder', raise_exception=True)
 def purchaseorder_list(request):
     orders = PurchaseOrder.objects.select_related('supplier').order_by('-order_date')
     return render(request, 'store/purchase_order/purchaseorder_list.html', {'orders': orders})
 
 
+@permission_required('store.view_purchaseorder', raise_exception=True)
 def purchaseorder_detail(request, pk):
     order = get_object_or_404(PurchaseOrder, pk=pk)
     return render(request, 'store/purchase_order/purchaseorder_detail.html', {'order': order})
 
 
+@permission_required('store.add_purchaseorder', raise_exception=True)
 def purchaseorder_create(request):
     if request.method == 'POST':
         form = PurchaseOrderForm(request.POST)
@@ -38,6 +30,7 @@ def purchaseorder_create(request):
     return render(request, 'store/purchase_order/purchaseorder_form.html', {'form': form, 'title': 'Add Purchase Order'})
 
 
+@permission_required('store.change_purchaseorder', raise_exception=True)
 def purchaseorder_update(request, pk):
     order = get_object_or_404(PurchaseOrder, pk=pk)
     if request.method == 'POST':
@@ -51,6 +44,7 @@ def purchaseorder_update(request, pk):
     return render(request, 'store/purchase_order/purchaseorder_form.html', {'form': form, 'title': 'Edit Purchase Order'})
 
 
+@permission_required('store.delete_purchaseorder', raise_exception=True)
 def purchaseorder_delete(request, pk):
     # PurchaseOrderItem.po is CASCADE -- deleting an order deletes its line
     # items too, so no ProtectedError is possible here. No try/except needed.

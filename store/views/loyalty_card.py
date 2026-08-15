@@ -4,28 +4,20 @@ from ..models import LoyaltyCard
 from ..forms import LoyaltyCardForm
 from django.contrib.auth.decorators import permission_required
 
-@permission_required('store.add_loyaltycard', raise_exception=True)
-def loyaltycard_create(request):
-    ...
 
-@permission_required('store.change_loyaltycard', raise_exception=True)
-def loyaltycard_update(request, pk):
-    ...
-
-@permission_required('store.delete_loyaltycard', raise_exception=True)
-def loyaltycard_delete(request, pk):
-    ...
-
+@permission_required('store.view_loyaltycard', raise_exception=True)
 def loyaltycard_list(request):
     cards = LoyaltyCard.objects.select_related('customer').order_by('customer__last_name')
     return render(request, 'store/loyalty_card/loyaltycard_list.html', {'cards': cards})
 
 
+@permission_required('store.view_loyaltycard', raise_exception=True)
 def loyaltycard_detail(request, pk):
     card = get_object_or_404(LoyaltyCard, pk=pk)
     return render(request, 'store/loyalty_card/loyaltycard_detail.html', {'card': card})
 
 
+@permission_required('store.add_loyaltycard', raise_exception=True)
 def loyaltycard_create(request):
     if request.method == 'POST':
         form = LoyaltyCardForm(request.POST)
@@ -38,6 +30,7 @@ def loyaltycard_create(request):
     return render(request, 'store/loyalty_card/loyaltycard_form.html', {'form': form, 'title': 'Add Loyalty Card'})
 
 
+@permission_required('store.change_loyaltycard', raise_exception=True)
 def loyaltycard_update(request, pk):
     card = get_object_or_404(LoyaltyCard, pk=pk)
     if request.method == 'POST':
@@ -51,8 +44,9 @@ def loyaltycard_update(request, pk):
     return render(request, 'store/loyalty_card/loyaltycard_form.html', {'form': form, 'title': 'Edit Loyalty Card'})
 
 
+@permission_required('store.delete_loyaltycard', raise_exception=True)
 def loyaltycard_delete(request, pk):
-    # SaleItem.discount aside, nothing points to LoyaltyCard itself. No incoming FKs, so no ProtectedError possible.
+    # No incoming FKs point to LoyaltyCard itself, so no ProtectedError possible.
     card = get_object_or_404(LoyaltyCard, pk=pk)
     if request.method == 'POST':
         customer_name = str(card.customer)
