@@ -143,20 +143,6 @@ def top_customers_view(request):
     return render(request, 'store/reports/advanced/top_customers.html', {'results': results})
 
 
-@permission_required('store.view_sale', raise_exception=True)
-def category_performance_view(request):
-    from django.utils import timezone
-    today = timezone.localdate()
-    start = request.GET.get('start', today.replace(day=1).isoformat())
-    end = request.GET.get('end', today.isoformat())
-
-    with connection.cursor() as cursor:
-        cursor.callproc('sp_category_performance', [start, end])
-        results = _dictfetchall(cursor)
-    return render(request, 'store/reports/advanced/category_performance.html', {
-        'results': results, 'start': start, 'end': end,
-    })
-
 
 @permission_required('store.view_supplier', raise_exception=True)
 def supplier_performance_view(request):

@@ -3,6 +3,7 @@ from django.contrib import messages
 from ..models import Customer
 from ..forms import CustomerForm
 from django.contrib.auth.decorators import permission_required
+from django.db import connection
 
 
 @permission_required('store.view_customer', raise_exception=True)
@@ -14,7 +15,16 @@ def customer_list(request):
 @permission_required('store.view_customer', raise_exception=True)
 def customer_detail(request, pk):
     customer = get_object_or_404(Customer, pk=pk)
-    return render(request, 'store/customer/customer_detail.html', {'customer': customer})
+
+    with connection.cursor() as cursor:
+        cursor.callproc('sp_customer_order_history', [customer.pk])
+        columns = [col[0] for col in cursor.description]
+        order_history = [dict(zip(columns, row)) for row in cursor.fetchall()]
+
+    return render(request, 'store/customer/customer_detail.html', {
+        'customer': customer,
+        'order_history': order_history,
+    })
 
 
 @permission_required('store.add_customer', raise_exception=True)
@@ -55,3 +65,5 @@ def customer_delete(request, pk):
         messages.success(request, f'Customer "{customer}" deleted.')
         return redirect('customer_list')
     return render(request, 'store/customer/customer_confirm_delete.html', {'customer': customer})
+
+
