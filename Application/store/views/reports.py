@@ -7,7 +7,7 @@ from datetime import date, timedelta
 from django.utils.dateparse import parse_date
 from django.contrib.auth.decorators import permission_required, login_required
 
-from Application.store.models import Product, Sale, SaleItem, Inventory, Customer, Supplier
+from store.models import Product, Sale, SaleItem, Inventory, Customer, Supplier
 
 
 @permission_required('store.view_sale', raise_exception=True)

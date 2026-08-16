@@ -1,5 +1,5 @@
 from django.urls import path
-from Application.store import views
+from store import views
 
 
 

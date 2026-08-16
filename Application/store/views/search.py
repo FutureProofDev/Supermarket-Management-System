@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.db.models import Q, F
-from Application.store.models import Product, Customer, Sale, Inventory, Category, Supplier, Employee
+from store.models import Product, Customer, Sale, Inventory, Category, Supplier, Employee
 
 ENTITY_PERMISSION_MAP = {
     'products': 'store.view_product',
