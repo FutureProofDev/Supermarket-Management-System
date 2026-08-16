@@ -5,15 +5,7 @@ USE supermarket_db;
 
 DELIMITER //
 
--- Trigger 1: Auto-deduct stock after sale item insert
-CREATE TRIGGER trg_after_sale_item_insert
-AFTER INSERT ON sale_item
-FOR EACH ROW
-BEGIN
-    UPDATE inventory
-    SET quantity_on_hand = quantity_on_hand - NEW.quantity
-    WHERE product_id = NEW.product_id;
-END//
+
 
 -- Trigger 2: Auto-add loyalty points on completed checkout 
 CREATE TRIGGER trg_after_sale_loyalty_update

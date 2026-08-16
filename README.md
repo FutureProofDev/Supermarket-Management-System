@@ -13,7 +13,7 @@ A Django + MySQL supermarket management system built for CS323 Database Systems.
 
 - **Backend:** Django (Python)
 - **Database:** MySQL
-- **Frontend:** Django Templates, HTML/CSS, vanilla JS
+- **Frontend:** Django Templates, HTML/CSS, JS
 
 ## Prerequisites
 
@@ -22,7 +22,7 @@ A Django + MySQL supermarket management system built for CS323 Database Systems.
 - A virtual environment tool (`venv`)
 
 ## Setup Instructions
-Run all commands below from an integrated terminal opened at the **project root folder** (the same folder as `manage.py`).
+Run all commands below from an integrated terminal opened at the **project Application folder** (the same folder as `manage.py`).
 
 If "mysql -u root -p" commands fail to run. Either add mysql to your system path or open a mysql client and ran the contents
 of the .sql files directly in the terminal. 
@@ -45,6 +45,12 @@ pip install -r requirements.txt
 
 ### 2. Configure environment variables
 
+Generate a django secrete key with this command:
+
+```bash
+python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
+```
+
 Create a `.env` file in the project root with your database credentials:
 
 ```
@@ -53,6 +59,8 @@ DB_USER=root
 DB_PASSWORD=your_mysql_password
 DB_HOST=127.0.0.1
 DB_PORT=3306
+SECRET_KEY="your_django_secret_key"
+
 ```
 
 ### 3. Create the database schema
@@ -60,7 +68,12 @@ DB_PORT=3306
 Open a MySQL client (command line or GUI) and run the following, in this exact order, against a fresh MySQL server:
 
 ```bash
-mysql -u root -p < database_backend/ddl_script.sql
+mysql -u root -p < Database/create_database.sql
+mysql -u root -p < Database/create_tables.sql
+mysql -u root -p supermarket_db < Database/procedures.sql
+mysql -u root -p supermarket_db < Database/queries.sql
+mysql -u root -p supermarket_db < Database/triggers.sql
+mysql -u root -p supermarket_db < Database/views.sql
 ```
 
 This creates the `supermarket_db` database and all core application tables (`product`, `customer`, `employee`, `sale`, `inventory`, etc.), along with constraints and indexes.
@@ -68,7 +81,7 @@ This creates the `supermarket_db` database and all core application tables (`pro
 ### 4. Seed initial data
 
 ```bash
-mysql -u root -p supermarket_db < database_backend/dml_script.sql
+mysql -u root -p supermarket_db < Database/dml_script.sql
 ```
 
 This populates suppliers, categories, employees, customers, products, inventory, purchase orders, sales, and loyalty cards with realistic sample data.
@@ -89,7 +102,7 @@ python manage.py migrate admin
 The `employee.user_id` column links a staff record to a Django login account, but this foreign key can't be created until `auth_user` exists (step 5). Run the following against your database:
 
 ```bash
-mysql -u root -p supermarket_db < database_backend/foreign_key.sql
+mysql -u root -p supermarket_db < Database/foreign_key.sql
 ```
 
 ### 7.  Django setup with existing tables

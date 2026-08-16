@@ -65,9 +65,7 @@ class Customer(models.Model):
     customer_id = models.AutoField(primary_key=True)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
-    # DDL had both `unique` on phone AND a separate idx_customer_phone index,
-    # which is redundant (a unique constraint already creates an index in MySQL).
-    # unique=True below covers it; no separate Meta.indexes entry needed.
+
     phone = models.CharField(max_length=20, unique=True, blank=True, null=True)
     email = models.EmailField(max_length=100, unique=True, blank=True, null=True)
 
@@ -109,7 +107,6 @@ class Product(models.Model):
     name = models.CharField(max_length=100)
     unit_price = models.DecimalField(max_digits=10, decimal_places=2)
     barcode = models.CharField(max_length=50, unique=True)
-    # New field, closing the expiry-discount gap identified earlier.
     expiry_date = models.DateField(blank=True, null=True)
 
     class Meta:
@@ -154,9 +151,7 @@ class PurchaseOrder(models.Model):
 class PurchaseOrderItem(models.Model):
     po_item_id = models.AutoField(primary_key=True)
     po = models.ForeignKey(PurchaseOrder, on_delete=models.CASCADE, related_name='items')
-    # Open item from earlier: went with PROTECT to match SaleItem.product's
-    # reasoning -- purchasing history should survive a product deletion too.
-    # Flip to CASCADE if you decide that history doesn't need to stay queryable.
+
     product = models.ForeignKey(Product, on_delete=models.PROTECT, related_name='purchase_order_items')
     quantity = models.IntegerField()
     unit_cost = models.DecimalField(max_digits=10, decimal_places=2)
@@ -174,8 +169,7 @@ class PurchaseOrderItem(models.Model):
 
 class Inventory(models.Model):
     inventory_id = models.AutoField(primary_key=True)
-    # Open item from earlier: went with PROTECT, not CASCADE -- deleting a
-    # product shouldn't silently discard a nonzero on-hand quantity.
+  
     product = models.OneToOneField(Product, on_delete=models.PROTECT, related_name='inventory')
     quantity_on_hand = models.IntegerField(default=0)
     reorder_level = models.IntegerField(default=10)
@@ -238,7 +232,7 @@ class LoyaltyCard(models.Model):
     card_id = models.AutoField(primary_key=True)
     customer = models.OneToOneField(Customer, on_delete=models.CASCADE, related_name='loyalty_card')
     points_balance = models.IntegerField(default=0)
-    # DateField, not DateTimeField 
+  
     issued_date = models.DateField(default=timezone.localdate)
 
     class Meta:
