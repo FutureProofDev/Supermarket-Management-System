@@ -1,0 +1,17 @@
+{% extends 'store/base.html' %}
+
+{% block title %}Access Denied - Essentials MS{% endblock %}
+
+{% block content %}
+<div style="text-align: center; padding: 4rem 1rem;">
+    <h1 style="font-size: 3rem; margin-bottom: 0.5rem;">403</h1>
+    <h2 style="margin-bottom: 1rem; color: var(--color-text);">Access Denied</h2>
+    <p style="color: var(--color-muted); margin-bottom: 2rem;">
+        Your account doesn't have permission to view this page.
+        {% if user.is_authenticated %}
+            You're logged in as <strong>{{ user.username }}</strong>.
+        {% endif %}
+    </p>
+    <a href="{% url 'home' %}" class="button">Return to Dashboard</a>
+</div>
+{% endblock %}

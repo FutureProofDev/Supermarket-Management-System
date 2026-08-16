@@ -10,8 +10,7 @@ import environ
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# django-environ: reads a local .env file (gitignored) for secrets so they
-# never get hardcoded/committed. Copy .env.example to .env and fill it in.
+
 env = environ.Env(
     DEBUG=(bool, True),
 )

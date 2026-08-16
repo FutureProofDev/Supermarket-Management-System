@@ -8,10 +8,9 @@ from django.contrib.auth.decorators import login_not_required
 
 @login_not_required
 def login_view(request):
-    """
-    Handles user login terminal authentication.
-    Redirects already authenticated users to the dashboard home page.
-    """
+    '''
+    Authenticates the user and starts their session.
+    '''
     if request.user.is_authenticated:
         return redirect('home')
 
@@ -46,7 +45,7 @@ def login_view(request):
 @require_http_methods(["GET", "POST"])
 def logout_view(request):
     """
-    Terminates the active terminal session and redirects to the login screen.
+    Logs the user out and redirects to the login screen.
     """
     if request.user.is_authenticated:
         logout(request)

@@ -101,6 +101,30 @@
     .btn-sm.add:hover {
         background: var(--color-accent-dark);
     }
+
+        .register-card {
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: 8px;
+        padding: 1.5rem;
+        box-sizing: border-box;
+    }
+
+    .entity-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid var(--color-border);
+        box-sizing: border-box;
+    }
+
+    .entity-actions {
+        display: flex;
+        gap: 0.4rem;
+        padding-right: 0.25rem;
+        flex-shrink: 0;
+    }
 </style>
 
 <div class="register-header">
@@ -171,18 +195,20 @@
         <h2>Inventory & Procurement</h2>
         <ul class="entity-list">
             <li class="entity-item">
+                <a href="{% url 'stock_alerts_report' %}" class="entity-title">Stock Alerts Report</a>
+                <div class="entity-actions">
+                    <a href="{% url 'stock_alerts_report' %}" class="btn-sm">View Report &rarr;</a>
+                </div>
+            </li>
+
+            <li class="entity-item">
                 <a href="{% url 'product_list' %}" class="entity-title">Products</a>
                 <div class="entity-actions">
                     <a href="{% url 'product_list' %}" class="btn-sm">View All</a>
                     <a href="{% url 'product_create' %}" class="btn-sm add">+ Add</a>
                 </div>
             </li>
-            <li class="entity-item">
-            <a href="{% url 'stock_alerts_report' %}" class="button">View Report &rarr;</a>
-            <div class="entity-actions">
-                <a href="{% url 'stock_alerts_report' %}" class="button">View Report &rarr;</a>
-            </div>
-            </li>
+            
             <li class="entity-item">
                 <a href="{% url 'inventory_list' %}" class="entity-title">Inventory</a>
                 <div class="entity-actions">

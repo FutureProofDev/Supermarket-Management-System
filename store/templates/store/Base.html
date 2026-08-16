@@ -47,6 +47,12 @@
         {% if user.is_authenticated %}
             <span style="font-size: 0.85rem; color: var(--color-muted);">
                 Logged in as <strong>{{ user.username }}</strong>
+
+                {% if user.is_superuser %}
+                    (Store Manager)
+                {% elif user.groups.all %}
+                    ({{ user.groups.first.name }})
+                {% endif %}
                 
             </span>
             <form action="{% url 'logout' %}" method="post" style="display: inline; margin: 0;">
