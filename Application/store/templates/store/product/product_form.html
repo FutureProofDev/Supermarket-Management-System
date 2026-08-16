@@ -1,0 +1,31 @@
+{% extends 'store/base.html' %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+
+<style>
+    ul.errorlist {
+        list-style: none !important;
+        padding: 0.5rem 0.85rem !important;
+        margin: 0.4rem 0 !important;
+        background: #f7e8e6 !important;
+        border: 1px solid #e3b8b1 !important;
+        color: #a3372c !important;
+        border-radius: 6px !important;
+        font-size: 0.85rem !important;
+        font-weight: 600 !important;
+    }
+    ul.errorlist li {
+        list-style-type: none !important;
+    }
+</style>
+
+<h1>{{ title }}</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <div class="actions">
+        <input type="submit" value="Save">
+        <a href="{% url 'product_list' %}" class="button">&larr; Back</a>
+    </div>
+</form>
+{% endblock %}
