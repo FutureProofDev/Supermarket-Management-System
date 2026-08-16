@@ -102,8 +102,6 @@ urlpatterns = [
     path('reports/top-products/', views.top_products_by_category_view, name='top_products_by_category'),
     path('reports/weekday-sales/', views.weekday_sales_view, name='weekday_sales'),
     path('reports/repeat-relationships/', views.repeat_customer_employee_view, name='repeat_customer_employee'),
-    path('reports/top-customers/', views.top_customers_view, name='top_customers'),
-    path('reports/category-performance/', views.category_performance_view, name='category_performance'),
     path('reports/supplier-performance/', views.supplier_performance_view, name='supplier_performance'),
 
 ]

@@ -26,4 +26,26 @@
         <a href="{% url 'customer_list' %}" class="button secondary">&larr; Back to list</a>
     </div>
 </div>
+
+<h2 style="margin-top: 2rem;">Lifetime Summary</h2>
+<p>Total Orders: {{ profile_summary.total_orders }} &nbsp;|&nbsp; Lifetime Spend: GHS {{ profile_summary.lifetime_spend }}</p>
+
+<h2>Recent Orders</h2>
+<table>
+    <thead>
+        <tr><th>Sale ID</th><th>Date</th><th>Total</th><th>Served By</th></tr>
+    </thead>
+    <tbody>
+        {% for order in order_history %}
+        <tr>
+            <td>#{{ order.sale_id }}</td>
+            <td>{{ order.sale_date }}</td>
+            <td>GHS {{ order.total_amount }}</td>
+            <td>{{ order.served_by }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4">No purchases yet.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
 {% endblock %}
