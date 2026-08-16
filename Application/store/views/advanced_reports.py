@@ -135,14 +135,6 @@ def repeat_customer_employee_view(request):
 
 #  STORED PROCEDURE REPORTS 
 
-@permission_required('store.view_customer', raise_exception=True)
-def top_customers_view(request):
-    with connection.cursor() as cursor:
-        cursor.callproc('sp_top_customers', [10])
-        results = _dictfetchall(cursor)
-    return render(request, 'store/reports/advanced/top_customers.html', {'results': results})
-
-
 
 @permission_required('store.view_supplier', raise_exception=True)
 def supplier_performance_view(request):
