@@ -2,8 +2,6 @@ USE supermarket_db;
 
 
 -- ADVANCED SQL QUERIES (10 QUERIES)
-
-
 -- 1: Rank products by sales revenue within each category using DENSE_RANK()
 SELECT 
     c.name AS category_name,
@@ -111,27 +109,3 @@ FROM CashierStats
 WHERE total_sales_handled >= (SELECT AVG(total_sales_handled) FROM CashierStats)
 ORDER BY last_name, first_name;
 
---  9: Customers who bought products across more than 2  categories
-SELECT 
-    c.customer_id,
-    c.first_name,
-    c.last_name,
-    COUNT(DISTINCT p.category_id) AS distinct_categories_purchased
-FROM customer c
-JOIN sale s ON c.customer_id = s.customer_id
-JOIN sale_item si ON s.sale_id = si.sale_id
-JOIN product p ON si.product_id = p.product_id
-GROUP BY c.customer_id, c.first_name, c.last_name
-HAVING COUNT(DISTINCT p.category_id) > 2
-ORDER BY c.last_name, c.first_name;
-
--- 10: Evaluating customer loyalty tiers 
-SELECT 
-    c.customer_id,
-    c.first_name,
-    c.last_name,
-    lc.points_balance,
-    fn_get_customer_tier(lc.points_balance) AS calculated_loyalty_tier
-FROM customer c
-JOIN loyalty_card lc ON c.customer_id = lc.customer_id
-ORDER BY lc.points_balance DESC, c.last_name, c.first_name;
