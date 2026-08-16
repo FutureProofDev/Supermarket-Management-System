@@ -79,9 +79,7 @@ LEFT JOIN purchase_order_item poi ON po.po_id = poi.po_id
 GROUP BY sup.supplier_id, sup.name;
 
 
--- ========================================================
--- 2. AUTOMATED TRIGGERS (3 TRIGGERS)
--- ========================================================
+
 
 DELIMITER //
 
@@ -127,9 +125,7 @@ END//
 DELIMITER ;
 
 
--- ========================================================
--- 3. USER-DEFINED FUNCTIONS (2 UDFs)
--- ========================================================
+
 
 DELIMITER //
 
@@ -172,9 +168,7 @@ END//
 DELIMITER ;
 
 
--- ========================================================
--- 4. STORED PROCEDURES (3 STORED PROCEDURES)
--- ========================================================
+
 
 DELIMITER //
 
@@ -236,9 +230,7 @@ END//
 DELIMITER ;
 
 
--- ========================================================
--- 5. ADVANCED SQL QUERIES (10 QUERIES)
--- ========================================================
+
 
 -- Query 1: Rank products by sales revenue within each category using DENSE_RANK()
 SELECT 
