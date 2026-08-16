@@ -1,14 +1,12 @@
 # store/views/reports.py
 
 from django.shortcuts import render
-from django.db.models import Sum, Count, F, Q, ExpressionWrapper, DecimalField, Avg
+from django.db.models import Sum, Count, F
 from django.utils import timezone
 from datetime import date, timedelta
 from django.utils.dateparse import parse_date
 from django.contrib.auth.decorators import permission_required, login_required
-from django.db.models import Window, ExpressionWrapper, DecimalField
-from django.db.models.functions import DenseRank, Lag, TruncDate, TruncMonth
-from store.models import Employee, LoyaltyCard
+
 
 from store.models import Product, Sale, SaleItem, Inventory, Customer, Supplier
 
