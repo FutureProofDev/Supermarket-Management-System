@@ -53,6 +53,7 @@ LEFT JOIN sale s ON c.customer_id = s.customer_id
 GROUP BY c.customer_id, c.first_name, c.last_name, c.phone, c.email, lc.points_balance
 ORDER BY c.last_name, c.first_name;
 
+
 -- View 4: Product Sales Performance
 CREATE OR REPLACE VIEW vw_product_sales_performance AS
 SELECT 
@@ -127,7 +128,7 @@ WHERE user_id IS NULL;
 -- View 9: Customers Without a Loyalty Card
 
 CREATE OR REPLACE VIEW vw_customers_without_loyalty AS
-SELECT 
+SELECT
     c.customer_id,
     CONCAT(c.first_name, ' ', c.last_name) AS customer_name,
     c.phone,

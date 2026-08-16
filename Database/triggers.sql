@@ -5,6 +5,8 @@ USE supermarket_db;
 
 DELIMITER //
 
+
+
 -- Trigger 2: Auto-add loyalty points on completed checkout 
 CREATE TRIGGER trg_after_sale_loyalty_update
 AFTER INSERT ON sale

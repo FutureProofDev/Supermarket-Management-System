@@ -12,7 +12,7 @@ RETURNS VARCHAR(30)
 DETERMINISTIC
 BEGIN
     DECLARE v_greeting VARCHAR(30);
-    
+
     IF p_hour BETWEEN 5 AND 11 THEN
         SET v_greeting = 'Good Morning';
     ELSEIF p_hour BETWEEN 12 AND 16 THEN
