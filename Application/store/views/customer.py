@@ -56,9 +56,7 @@ def customer_update(request, pk):
 
 @permission_required('store.delete_customer', raise_exception=True)
 def customer_delete(request, pk):
-    # No try/except ProtectedError needed here. Sale.customer is SET_NULL and
-    # LoyaltyCard.customer is CASCADE. Deleting a customer never raises
-    # ProtectedError; it just nulls out their sales and deletes their loyalty card automatically.
+
     customer = get_object_or_404(Customer, pk=pk)
     if request.method == 'POST':
         customer.delete()

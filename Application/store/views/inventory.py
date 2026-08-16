@@ -47,7 +47,6 @@ def inventory_update(request, pk):
 
 @permission_required('store.delete_inventory', raise_exception=True)
 def inventory_delete(request, pk):
-    # Inventory has no incoming FKs from anything else. Nothing points to an Inventory row, so ProtectedError can't happen here.
     item = get_object_or_404(Inventory, pk=pk)
     if request.method == 'POST':
         product_name = item.product.name
