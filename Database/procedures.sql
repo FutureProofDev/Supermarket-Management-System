@@ -5,98 +5,84 @@ USE supermarket_db;
 
 DELIMITER //
 
---  Calculate discounted price
-CREATE FUNCTION fn_calculate_discounted_price(
-    p_unit_price DECIMAL(10,2),
-    p_quantity INT,
-    p_discount_id INT
-) 
-RETURNS DECIMAL(10,2)
-DETERMINISTIC
-BEGIN
-    DECLARE v_percent DECIMAL(5,2) DEFAULT 0.00;
-    DECLARE v_total DECIMAL(10,2);
-    
-    IF p_discount_id IS NOT NULL THEN
-        SELECT percent_off INTO v_percent 
-        FROM discount 
-        WHERE discount_id = p_discount_id;
-    END IF;
-    
-    SET v_total = (p_unit_price * p_quantity) * (1 - (v_percent / 100));
-    RETURN ROUND(v_total, 2);
-END//
+DROP FUNCTION IF EXISTS fn_greeting_for_hour //
 
--- Determine loyalty tier based on points balance
-CREATE FUNCTION fn_get_customer_tier(p_points INT)
-RETURNS VARCHAR(20)
+CREATE FUNCTION fn_greeting_for_hour(p_hour INT)
+RETURNS VARCHAR(30)
 DETERMINISTIC
 BEGIN
-    IF p_points >= 200 THEN
-        RETURN 'Gold';
-    ELSEIF p_points >= 100 THEN
-        RETURN 'Silver';
+    DECLARE v_greeting VARCHAR(30);
+
+    IF p_hour BETWEEN 5 AND 11 THEN
+        SET v_greeting = 'Good Morning';
+    ELSEIF p_hour BETWEEN 12 AND 16 THEN
+        SET v_greeting = 'Good Afternoon';
+    ELSEIF p_hour BETWEEN 17 AND 21 THEN
+        SET v_greeting = 'Good Evening';
     ELSE
-        RETURN 'Bronze';
+        SET v_greeting = 'Welcome';
     END IF;
-END//
+
+    RETURN v_greeting;
+END //
+
+DELIMITER ;
 
 
--- STORED PROCEDURES 
+
+
+-- STORED PROCEDURE
 
 -- Auto-generate Purchase Orders for Low Stock Items
-CREATE PROCEDURE sp_auto_generate_low_stock_po(
-    IN p_employee_id INT,
-    IN p_supplier_id INT
-)
+DELIMITER //
+
+DROP PROCEDURE IF EXISTS sp_customer_order_history //
+
+CREATE PROCEDURE sp_customer_order_history(IN p_customer_id INT)
 BEGIN
-    DECLARE v_po_id INT;
-    
-    INSERT INTO purchase_order (supplier_id, employee_id, status)
-    VALUES (p_supplier_id, p_employee_id, 'Draft');
-    
-    SET v_po_id = LAST_INSERT_ID();
-    
-    INSERT INTO purchase_order_item (po_id, product_id, quantity, unit_cost)
+    -- Customer core profile and lifetime metrics
     SELECT 
-        v_po_id,
-        p.product_id,
-        (i.reorder_level * 2) AS recommended_qty,
-        ROUND(p.unit_price * 0.70, 2)
-    FROM inventory i
-    JOIN product p ON i.product_id = p.product_id
-    WHERE i.quantity_on_hand <= i.reorder_level;
-    
-    SELECT CONCAT('Purchase Order #', v_po_id, ' drafted successfully.') AS result;
-END//
+        c.customer_id,
+        c.first_name,
+        c.last_name,
+        c.email,
+        c.phone_number,
+        c.created_at AS member_since,
+        COUNT(s.sale_id) AS total_orders,
+        COALESCE(SUM(s.total_amount), 0.00) AS lifetime_spend
+    FROM customer c
+    LEFT JOIN sale s ON c.customer_id = s.customer_id
+    WHERE c.customer_id = p_customer_id
+    GROUP BY c.customer_id, c.first_name, c.last_name, c.email, c.phone_number, c.created_at;
 
--- Apply promotional discount percentage to an entire category
-CREATE PROCEDURE sp_apply_category_discount(
-    IN p_category_id INT,
-    IN p_discount_name VARCHAR(100),
-    IN p_percent_off DECIMAL(5,2),
-    IN p_start_date DATE,
-    IN p_end_date DATE
-)
-BEGIN
-    INSERT INTO discount (name, percent_off, start_date, end_date)
-    VALUES (p_discount_name, p_percent_off, p_start_date, p_end_date);
-    
-    SELECT CONCAT('Discount "', p_discount_name, '" added for category ID ', p_category_id) AS confirmation;
-END//
+    -- Recent transactions
+    SELECT 
+        sale_id,
+        sale_date,
+        total_amount,
+        payment_method
+    FROM sale
+    WHERE customer_id = p_customer_id
+    ORDER BY sale_date DESC
+    LIMIT 5;
+END //
 
---  Monthly Sales Summary Report
-CREATE PROCEDURE sp_generate_monthly_sales_report(
-    IN p_year INT,
-    IN p_month INT
-)
+DELIMITER ;
+
+DELIMITER //
+
+DROP PROCEDURE IF EXISTS sp_customer_order_history //
+
+CREATE PROCEDURE sp_customer_order_history(IN p_customer_id INT)
 BEGIN
     SELECT 
-        COUNT(s.sale_id) AS total_sales_count,
-        COALESCE(SUM(s.total_amount), 0) AS total_monthly_revenue,
-        COALESCE(AVG(s.total_amount), 0) AS average_transaction_value
+        s.id AS sale_id,
+        s.created_at AS sale_date,
+        s.total_amount,
+        s.payment_method
     FROM sale s
-    WHERE YEAR(s.sale_date) = p_year AND MONTH(s.sale_date) = p_month;
-END//
+    WHERE s.customer_id = p_customer_id
+    ORDER BY s.created_at DESC;
+END //
 
 DELIMITER ;
