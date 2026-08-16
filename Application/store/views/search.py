@@ -15,10 +15,7 @@ ENTITY_PERMISSION_MAP = {
 def search_page(request):
     entity = request.GET.get('entity', 'products')
 
-    # Guard against a user requesting an entity they don't have view
-    # permission for (e.g. by editing the URL directly). Fall back to
-    # whichever entity they're actually allowed to see, defaulting to
-    # 'products' since every role has at least view_product.
+    
     required_perm = ENTITY_PERMISSION_MAP.get(entity)
     if required_perm is None or not request.user.has_perm(required_perm):
         entity = 'products'
@@ -40,7 +37,7 @@ def search_page(request):
     suppliers = Supplier.objects.all().order_by('name')
     employees = Employee.objects.all().order_by('last_name', 'first_name')
 
-    # ==================== ENTITY: PRODUCTS ====================
+    # ENTITY: PRODUCTS 
     if entity == 'products':
         qs = Product.objects.select_related('category', 'supplier', 'inventory')
         if query:
@@ -56,7 +53,7 @@ def search_page(request):
             order_field = '-' + order_field
         results = qs.order_by(order_field)
 
-    # ==================== ENTITY: SALES ====================
+
     elif entity == 'sales':
         qs = Sale.objects.select_related('employee', 'customer')
         if query:
@@ -79,7 +76,7 @@ def search_page(request):
             order_field = '-' + order_field if sort_by else '-sale_date'
         results = qs.order_by(order_field)
 
-    # ==================== ENTITY: CUSTOMERS ====================
+
     elif entity == 'customers':
         qs = Customer.objects.select_related('loyalty_card')
         if query:
@@ -95,7 +92,6 @@ def search_page(request):
             order_field = '-' + order_field
         results = qs.order_by(order_field)
 
-    # ==================== ENTITY: INVENTORY ====================
     elif entity == 'inventory':
         qs = Inventory.objects.select_related('product', 'product__category', 'product__supplier')
         if query:

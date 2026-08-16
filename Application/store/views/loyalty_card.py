@@ -46,7 +46,6 @@ def loyaltycard_update(request, pk):
 
 @permission_required('store.delete_loyaltycard', raise_exception=True)
 def loyaltycard_delete(request, pk):
-    # No incoming FKs point to LoyaltyCard itself, so no ProtectedError possible.
     card = get_object_or_404(LoyaltyCard, pk=pk)
     if request.method == 'POST':
         customer_name = str(card.customer)
