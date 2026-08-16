@@ -22,8 +22,7 @@ def home_view(request):
         .filter(quantity_on_hand__lte=F('reorder_level'))
         .order_by('quantity_on_hand', 'product__name')
     )
-    print(greeting)
-
+   
     context = {
         'greeting': greeting,
         'total_products': total_products,
