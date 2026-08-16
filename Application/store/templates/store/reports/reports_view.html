@@ -57,4 +57,105 @@
     </div>
 
 </div>
+
+<div class="reports-header" style="margin-top: 2.5rem;">
+    <h1 style="font-size: 1.5rem;">Advanced Analytics</h1>
+    <p>Database views, stored procedures, and analytical queries powering deeper business insight.</p>
+</div>
+
+<div class="reports-grid">
+
+    <div class="report-card">
+        <div>
+            <h2>Category Overview</h2>
+            <p>Product count and price range per category.</p>
+        </div>
+        <div class="card-footer">
+            <a href="{% url 'category_overview' %}" class="button">View Report &rarr;</a>
+        </div>
+    </div>
+
+    <div class="report-card">
+        <div>
+            <h2>Active Discounts</h2>
+            <p>Discounts currently within their date range.</p>
+        </div>
+        <div class="card-footer">
+            <a href="{% url 'active_discounts' %}" class="button">View Report &rarr;</a>
+        </div>
+    </div>
+
+    <div class="report-card">
+        <div>
+            <h2>Near-Expiry Products</h2>
+            <p>Products expiring within the next 45 days.</p>
+        </div>
+        <div class="card-footer">
+            <a href="{% url 'near_expiry' %}" class="button">View Report &rarr;</a>
+        </div>
+    </div>
+
+    {% if user.is_superuser %}
+    <div class="report-card">
+        <div>
+            <h2>Unlinked Employees</h2>
+            <p>Staff records without a linked login account.</p>
+        </div>
+        <div class="card-footer">
+            <a href="{% url 'unlinked_employees' %}" class="button">View Report &rarr;</a>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="report-card">
+        <div>
+            <h2>Customers Without Loyalty Cards</h2>
+            <p>Candidates for loyalty program enrollment.</p>
+        </div>
+        <div class="card-footer">
+            <a href="{% url 'customers_without_loyalty' %}" class="button">View Report &rarr;</a>
+        </div>
+    </div>
+
+    <div class="report-card">
+        <div>
+            <h2>Top Products by Category</h2>
+            <p>The 3 best-selling products within each category.</p>
+        </div>
+        <div class="card-footer">
+            <a href="{% url 'top_products_by_category' %}" class="button">View Report &rarr;</a>
+        </div>
+    </div>
+
+    <div class="report-card">
+        <div>
+            <h2>Weekday Sales Pattern</h2>
+            <p>Which day of the week performs best.</p>
+        </div>
+        <div class="card-footer">
+            <a href="{% url 'weekday_sales' %}" class="button">View Report &rarr;</a>
+        </div>
+    </div>
+
+    <div class="report-card">
+        <div>
+            <h2>Top Customers</h2>
+            <p>The 10 highest lifetime spenders.</p>
+        </div>
+        <div class="card-footer">
+            <a href="{% url 'top_customers' %}" class="button">View Report &rarr;</a>
+        </div>
+    </div>
+
+    <div class="report-card">
+        <div>
+            <h2>Category Performance</h2>
+            <p>Units sold and revenue by category over a date range.</p>
+        </div>
+        <div class="card-footer">
+            <a href="{% url 'category_performance' %}" class="button">View Report &rarr;</a>
+        </div>
+    </div>
+
+</div>
 {% endblock %}

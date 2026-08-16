@@ -1,0 +1,20 @@
+{% extends 'store/base.html' %}
+{% block title %}Category Overview - Essentials MS{% endblock %}
+{% block content %}
+<h1>Category Overview</h1>
+<p>Product count and price range per category.</p>
+<table>
+    <thead><tr><th>Category</th><th>Products</th><th>Avg Price</th><th>Min Price</th><th>Max Price</th></tr></thead>
+    <tbody>
+        {% for row in results %}
+        <tr>
+            <td>{{ row.category_name }}</td>
+            <td>{{ row.product_count }}</td>
+            <td>GHS {{ row.avg_unit_price }}</td>
+            <td>GHS {{ row.min_price }}</td>
+            <td>GHS {{ row.max_price }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

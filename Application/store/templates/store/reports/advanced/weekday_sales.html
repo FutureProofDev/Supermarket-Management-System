@@ -1,0 +1,17 @@
+{% extends 'store/base.html' %}
+{% block title %}Weekday Sales Pattern - Essentials MS{% endblock %}
+{% block content %}
+<h1>Sales by Day of the Week</h1>
+<table>
+    <thead><tr><th>Weekday</th><th>Transactions</th><th>Revenue</th></tr></thead>
+    <tbody>
+        {% for row in results %}
+        <tr>
+            <td>{{ row.weekday }}</td>
+            <td>{{ row.transaction_count }}</td>
+            <td>GHS {{ row.total_revenue }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

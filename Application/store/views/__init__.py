@@ -12,3 +12,4 @@ from .reports import *
 from .sale import *
 from .search import *
 from .authentication import *
+from .advanced_reports import *

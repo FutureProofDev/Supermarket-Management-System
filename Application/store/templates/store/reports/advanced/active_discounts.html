@@ -1,0 +1,22 @@
+{% extends 'store/base.html' %}
+{% block title %}Active Discounts - Essentials MS{% endblock %}
+{% block content %}
+<h1>Active Discounts</h1>
+<p>Discounts currently within their date range.</p>
+<table>
+    <thead><tr><th>Name</th><th>Percent Off</th><th>Start</th><th>End</th><th>Days Remaining</th></tr></thead>
+    <tbody>
+        {% for row in results %}
+        <tr>
+            <td>{{ row.name }}</td>
+            <td>{{ row.percent_off }}%</td>
+            <td>{{ row.start_date }}</td>
+            <td>{{ row.end_date }}</td>
+            <td>{{ row.days_remaining }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="5">No active discounts right now.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends 'store/base.html' %}
+{% block title %}Top Products by Category - Essentials MS{% endblock %}
+{% block content %}
+<h1>Top 3 Best-Selling Products per Category</h1>
+<table>
+    <thead><tr><th>Category</th><th>Rank</th><th>Product</th><th>Units Sold</th></tr></thead>
+    <tbody>
+        {% for row in results %}
+        <tr>
+            <td>{{ row.category_name }}</td>
+            <td>#{{ row.rnk }}</td>
+            <td>{{ row.product_name }}</td>
+            <td>{{ row.total_quantity_sold }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

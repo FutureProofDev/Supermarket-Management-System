@@ -1,0 +1,30 @@
+{% extends 'store/base.html' %}
+{% block title %}Category Performance - Essentials MS{% endblock %}
+{% block content %}
+<h1>Category Performance</h1>
+<form method="get" style="margin-bottom: 1.5rem; display: flex; gap: 0.75rem; align-items: end;">
+    <div>
+        <label for="start">From</label><br>
+        <input type="date" name="start" id="start" value="{{ start }}">
+    </div>
+    <div>
+        <label for="end">To</label><br>
+        <input type="date" name="end" id="end" value="{{ end }}">
+    </div>
+    <button type="submit" class="button">Apply</button>
+</form>
+<table>
+    <thead><tr><th>Category</th><th>Units Sold</th><th>Revenue</th></tr></thead>
+    <tbody>
+        {% for row in results %}
+        <tr>
+            <td>{{ row.category_name }}</td>
+            <td>{{ row.units_sold }}</td>
+            <td>GHS {{ row.revenue }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="3">No sales in this date range.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

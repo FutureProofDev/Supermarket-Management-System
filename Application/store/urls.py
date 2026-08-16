@@ -92,4 +92,18 @@ urlpatterns = [
     path('loyalty-cards/<int:pk>/edit/', views.loyaltycard_update, name='loyaltycard_update'),
     path('loyalty-cards/<int:pk>/delete/', views.loyaltycard_delete, name='loyaltycard_delete'),
 
+    # Advanced Reports URLs
+    path('reports/category-overview/', views.category_overview_view, name='category_overview'),
+    path('reports/active-discounts/', views.active_discounts_view, name='active_discounts'),
+    path('reports/near-expiry/', views.near_expiry_view, name='near_expiry'),
+    path('reports/unlinked-employees/', views.unlinked_employees_view, name='unlinked_employees'),
+    path('reports/customers-no-loyalty/', views.customers_without_loyalty_view, name='customers_without_loyalty'),
+    path('reports/dead-stock/', views.dead_stock_view, name='dead_stock'),
+    path('reports/top-products/', views.top_products_by_category_view, name='top_products_by_category'),
+    path('reports/weekday-sales/', views.weekday_sales_view, name='weekday_sales'),
+    path('reports/repeat-relationships/', views.repeat_customer_employee_view, name='repeat_customer_employee'),
+    path('reports/top-customers/', views.top_customers_view, name='top_customers'),
+    path('reports/category-performance/', views.category_performance_view, name='category_performance'),
+    path('reports/supplier-performance/', views.supplier_performance_view, name='supplier_performance'),
+
 ]

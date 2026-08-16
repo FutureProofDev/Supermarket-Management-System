@@ -1,0 +1,16 @@
+{% extends 'store/base.html' %}
+{% block title %}Top Customers - Essentials MS{% endblock %}
+{% block content %}
+<h1>Top 10 Customers by Lifetime Spend</h1>
+<table>
+    <thead><tr><th>Customer</th><th>Lifetime Spend</th></tr></thead>
+    <tbody>
+        {% for row in results %}
+        <tr>
+            <td>{{ row.customer_name }}</td>
+            <td>GHS {{ row.lifetime_spend }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

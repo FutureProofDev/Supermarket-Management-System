@@ -1,0 +1,21 @@
+{% extends 'store/base.html' %}
+{% block title %}Near-Expiry Products - Essentials MS{% endblock %}
+{% block content %}
+<h1>Near-Expiry Products</h1>
+<p>Products expiring within 45 days.</p>
+<table>
+    <thead><tr><th>Product</th><th>Expiry Date</th><th>Days Left</th><th>Stock On Hand</th></tr></thead>
+    <tbody>
+        {% for row in results %}
+        <tr>
+            <td>{{ row.product_name }}</td>
+            <td>{{ row.expiry_date }}</td>
+            <td style="color: var(--color-danger); font-weight: bold;">{{ row.days_until_expiry }}</td>
+            <td>{{ row.quantity_on_hand }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4">Nothing nearing expiry.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
