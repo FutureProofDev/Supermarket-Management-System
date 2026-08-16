@@ -7,7 +7,7 @@ from .models import (
     Sale, SaleItem, LoyaltyCard
 )
 
-# ==================== INLINES (Child rows inside Parent pages) ====================
+#  INLINES (Child rows inside Parent pages) 
 
 class SaleItemInline(admin.TabularInline):
     """Allows viewing and editing SaleItems directly inside the Sale page."""
@@ -25,7 +25,7 @@ class InventoryInline(admin.StackedInline):
     model = Inventory
     can_delete = False
 
-# ==================== MODEL ADMINS ====================
+#  MODEL ADMINS 
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
@@ -33,7 +33,7 @@ class ProductAdmin(admin.ModelAdmin):
     list_display = ('name', 'category', 'supplier', 'unit_price', 'barcode', 'expiry_date')
     # Filter list by FK relationships
     list_filter = ('category', 'supplier')
-    # Search across FK fields (spans relationship using __)
+    # Search across FK fields (spans relationship using )
     search_fields = ('name', 'barcode', 'category__name', 'supplier__name')
     inlines = [InventoryInline]
 

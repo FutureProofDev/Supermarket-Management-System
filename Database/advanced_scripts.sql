@@ -1,8 +1,5 @@
 USE supermarket__db;
 
--- ========================================================
--- 1. ENTERPRISE VIEWS (5 VIEWS)
--- ========================================================
 
 -- View 1: Low Stock Alerts
 CREATE OR REPLACE VIEW vw_low_stock_alerts AS
