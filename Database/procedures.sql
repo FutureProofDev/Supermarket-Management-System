@@ -1,6 +1,6 @@
 USE supermarket_db;
 
--- USER-DEFINED FUNCTIONS 
+-- USER-DEFINED FUNCTIONS
 
 
 DELIMITER //
@@ -29,45 +29,7 @@ END //
 DELIMITER ;
 
 
-
-
--- STORED PROCEDURE
-
--- Auto-generate Purchase Orders for Low Stock Items
-DELIMITER //
-
-DROP PROCEDURE IF EXISTS sp_customer_order_history //
-
-CREATE PROCEDURE sp_customer_order_history(IN p_customer_id INT)
-BEGIN
-    -- Customer core profile and lifetime metrics
-    SELECT 
-        c.customer_id,
-        c.first_name,
-        c.last_name,
-        c.email,
-        c.phone_number,
-        c.created_at AS member_since,
-        COUNT(s.sale_id) AS total_orders,
-        COALESCE(SUM(s.total_amount), 0.00) AS lifetime_spend
-    FROM customer c
-    LEFT JOIN sale s ON c.customer_id = s.customer_id
-    WHERE c.customer_id = p_customer_id
-    GROUP BY c.customer_id, c.first_name, c.last_name, c.email, c.phone_number, c.created_at;
-
-    -- Recent transactions
-    SELECT 
-        sale_id,
-        sale_date,
-        total_amount,
-        payment_method
-    FROM sale
-    WHERE customer_id = p_customer_id
-    ORDER BY sale_date DESC
-    LIMIT 5;
-END //
-
-DELIMITER ;
+-- STORED PROCEDURES
 
 DELIMITER //
 
@@ -76,13 +38,14 @@ DROP PROCEDURE IF EXISTS sp_customer_order_history //
 CREATE PROCEDURE sp_customer_order_history(IN p_customer_id INT)
 BEGIN
     SELECT 
-        s.id AS sale_id,
-        s.created_at AS sale_date,
+        s.sale_id,
+        s.sale_date,
         s.total_amount,
-        s.payment_method
+        CONCAT(e.first_name, ' ', e.last_name) AS served_by
     FROM sale s
+    JOIN employee e ON s.employee_id = e.employee_id
     WHERE s.customer_id = p_customer_id
-    ORDER BY s.created_at DESC;
+    ORDER BY s.sale_date DESC;
 END //
 
 DELIMITER ;
