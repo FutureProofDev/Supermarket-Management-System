@@ -1,4 +1,4 @@
-use supermarket_backup_db;
+use supermarket_db;
 
 --  Suppliers 
 insert into supplier (name, contact_phone, email) values

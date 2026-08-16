@@ -4,10 +4,10 @@ A Django + MySQL supermarket management system built for CS323 Database Systems.
 
 ## Group Members
 
-- Nii Sowah Kobla Sowah
-- Natalie-Rose Andzie-Mensah
+- Nii Sowah Kwabla Sowah
+- Natalie Rose Andzie-Mensah
 - Yaa Waadu Asomaning
-- Vladimir Aduama
+- Vladimir Noel Aduama
 
 ## Technologies Used
 
@@ -22,7 +22,6 @@ A Django + MySQL supermarket management system built for CS323 Database Systems.
 - A virtual environment tool (`venv`)
 
 ## Setup Instructions
-
 Run all commands below from an integrated terminal opened at the **project root folder** (the same folder as `manage.py`).
 
 If "mysql -u root -p" commands fail to run. Either add mysql to your system path or open a mysql client and ran the contents
@@ -85,7 +84,7 @@ python manage.py migrate sessions
 python manage.py migrate admin
 ```
 
-### 6. Attach the Employee → User foreign key
+### 6. Attach the Employee - User foreign key
 
 The `employee.user_id` column links a staff record to a Django login account, but this foreign key can't be created until `auth_user` exists (step 5). Run the following against your database:
 
@@ -93,7 +92,7 @@ The `employee.user_id` column links a staff record to a Django login account, bu
 mysql -u root -p supermarket_db < database_backend/foreign_key.sql
 ```
 
-### 7. Tell Django your `store` app tables already exist
+### 7.  Django setup with existing tables
 
 Since the schema was created manually via SQL rather than through `python manage.py migrate store`, tell Django to mark those migrations as already applied without re-running them:
 
