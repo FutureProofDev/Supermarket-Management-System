@@ -1,9 +1,28 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.db.models import Q, F
 from store.models import Product, Customer, Sale, Inventory, Category, Supplier, Employee
 
+ENTITY_PERMISSION_MAP = {
+    'products': 'store.view_product',
+    'sales': 'store.view_sale',
+    'customers': 'store.view_customer',
+    'inventory': 'store.view_inventory',
+}
+
+
+@login_required
 def search_page(request):
     entity = request.GET.get('entity', 'products')
+
+    # Guard against a user requesting an entity they don't have view
+    # permission for (e.g. by editing the URL directly). Fall back to
+    # whichever entity they're actually allowed to see, defaulting to
+    # 'products' since every role has at least view_product.
+    required_perm = ENTITY_PERMISSION_MAP.get(entity)
+    if required_perm is None or not request.user.has_perm(required_perm):
+        entity = 'products'
+
     query = request.GET.get('q', '').strip()
     category_id = request.GET.get('category', '')
     supplier_id = request.GET.get('supplier', '')
@@ -31,7 +50,6 @@ def search_page(request):
         if supplier_id:
             qs = qs.filter(supplier_id=supplier_id)
 
-        # Dynamic Sorting
         sort_map = {'name': 'name', 'price': 'unit_price', 'expiry': 'expiry_date'}
         order_field = sort_map.get(sort_by, 'name')
         if sort_dir == 'desc':

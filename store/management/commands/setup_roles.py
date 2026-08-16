@@ -21,7 +21,7 @@ ROLE_PERMISSIONS = {
         'employee': ['view'],
     },
     'Head Cashier': {
-        'sale': ['add', 'view'],
+        'sale': ['view', 'add'],
         'saleitem': ['add', 'view'],
         'customer': ['add', 'change', 'delete', 'view'],
         'loyaltycard': ['add', 'change', 'delete', 'view'],
@@ -32,7 +32,7 @@ ROLE_PERMISSIONS = {
         'supplier': ['view'],
     },
     'Cashier': {
-        'sale': ['add', 'view'],
+        'sale': ['view', 'add'],
         'saleitem': ['add', 'view'],
         'customer': ['add', 'view'],
         'loyaltycard': ['view'],

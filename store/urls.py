@@ -3,7 +3,7 @@ from store import views
 
 
 
-urlpatterns = urlpatterns = [
+urlpatterns = [
     # Authentication
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
@@ -26,7 +26,6 @@ urlpatterns = urlpatterns = [
     # Reports URLs
     path('reports/', views.reports_view, name='reports_view'),
     path('reports/daily-sales/', views.daily_sales_report, name='daily_sales_report'),
-    path('reports/low-stock-expiry/', views.report_low_stock_and_expiry, name='report_low_stock_expiry'),
     path('reports/sales-analytics/', views.report_sales_analytics, name='report_sales_analytics'),
     path('reports/stock-alerts/', views.stock_alerts_report, name='stock_alerts_report'),
 

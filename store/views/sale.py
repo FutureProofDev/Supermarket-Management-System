@@ -7,7 +7,7 @@ from django.db import transaction
 from django.db.models import F
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import permission_required
 
 from ..forms import SaleHeaderForm, SaleLineFormSet
 from ..models import Employee, Inventory, Sale, SaleItem, Product, Discount
@@ -17,20 +17,20 @@ LOYALTY_DISCOUNT_RATE = Decimal('0.15')
 EXPIRY_DISCOUNT_RATE = Decimal('0.50')
 
 
-@login_required
+@permission_required('store.view_sale', raise_exception=True)
 def sale_list(request):
     sales = Sale.objects.select_related('employee', 'customer').order_by('-sale_date')
     return render(request, 'store/sale/sale_list.html', {'sales': sales})
 
 
-@login_required
+@permission_required('store.view_sale', raise_exception=True)
 def sale_detail(request, pk):
     sale = get_object_or_404(Sale.objects.select_related('employee', 'customer'), pk=pk)
     items = sale.items.select_related('product', 'discount')
-    
+
     # Retrieve previous stock levels stored in session for the demo confirmation view
     stock_audit = request.session.pop(f'sale_{sale.sale_id}_stock_audit', None)
-    
+
     return render(request, 'store/sale/sale_detail.html', {
         'sale': sale,
         'items': items,
@@ -38,12 +38,10 @@ def sale_detail(request, pk):
     })
 
 
-@login_required
+@permission_required('store.add_sale', raise_exception=True)
 def checkout(request):
     # Derive active employee from logged-in user
     employee = getattr(request.user, 'employee_profile', None)
-    if not employee:
-        employee = Employee.objects.filter(email__iexact=request.user.email).first() or Employee.objects.first()
 
     if not employee:
         messages.error(request, "No active Employee profile linked to this user account.")

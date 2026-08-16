@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from datetime import timedelta
+from django.conf import settings
 
 
 
@@ -30,14 +31,28 @@ class Category(models.Model):
         return self.name
 
 
+
 class Employee(models.Model):
     employee_id = models.AutoField(primary_key=True)
-
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='employee_profile',
+    )
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     role = models.CharField(max_length=50)
     email = models.EmailField(max_length=100, unique=True, blank=True, null=True)
+    phone = models.CharField(max_length=20, blank=True, null=True)
 
+
+    class Meta:
+        db_table = 'employee'
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"
     class Meta:
         db_table = 'employee'
 

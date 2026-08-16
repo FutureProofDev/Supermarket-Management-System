@@ -104,11 +104,17 @@
 </div>
 
 <!-- Quick Operations -->
+<!-- Quick Operations -->
 <div class="quick-actions">
     <h2>Quick Operations</h2>
     <div class="action-buttons">
+        {% if perms.store.add_sale %}
+        <a href="{% url 'checkout' %}" class="button">+ New Sale</a>
+        {% endif %}
+        {% if perms.store.add_category %}
         <a href="{% url 'category_create' %}" class="button secondary">+ Add Category</a>
         <a href="{% url 'category_list' %}" class="button secondary">View Categories</a>
+        {% endif %}
     </div>
 </div>
 

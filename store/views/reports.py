@@ -1,24 +1,18 @@
-
 # store/views/reports.py
 
 from django.shortcuts import render
 from django.db.models import Sum, Count, F, Q, ExpressionWrapper, DecimalField, Avg
 from django.utils import timezone
 from datetime import date, timedelta
+from django.utils.dateparse import parse_date
+from django.contrib.auth.decorators import permission_required, login_required
+
 from store.models import Product, Sale, SaleItem, Inventory, Customer, Supplier
 
-from datetime import timedelta
 
-from django.db.models import Count, Sum
-from django.shortcuts import render
-from django.utils import timezone
-from django.utils.dateparse import parse_date
-
-from ..models import Sale, SaleItem
-
-
+@permission_required('store.view_sale', raise_exception=True)
 def daily_sales_report(request):
-    
+
     requested_date = parse_date(request.GET.get('date', '') or '')
     report_date = requested_date or timezone.localdate()
 
@@ -66,24 +60,20 @@ def daily_sales_report(request):
     return render(request, 'store/reports/daily_sales_report.html', context)
 
 
-
-
-
-
-
-
-
 # GENERAL REPORTS
+@login_required
 def reports_view(request):
     """
     Central hub page providing quick navigation cards to all system reports.
     """
     return render(request, 'store/reports/reports_view.html')
 
+
 # ---------------------------------------------------------------------
 # Report 1: Low-Stock & Near-Expiry Product Alert Report
 # Maps to Q6 & Q10 in advanced_scripts.sql
 # ---------------------------------------------------------------------
+@permission_required('store.view_inventory', raise_exception=True)
 def stock_alerts_report(request):
     today = date.today()
     near_expiry_threshold = today + timedelta(days=45)
@@ -111,6 +101,7 @@ def stock_alerts_report(request):
 # Report 2: Sales & Revenue Analytics Report
 # Maps to Q4 & Q8 in advanced_scripts.sql
 # ---------------------------------------------------------------------
+@permission_required('store.view_sale', raise_exception=True)
 def report_sales_analytics(request):
     # Total Revenue & Transaction Count
     totals = Sale.objects.aggregate(

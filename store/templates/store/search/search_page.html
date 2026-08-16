@@ -20,13 +20,22 @@
             <div class="search-form-grid">
                 
                 <!-- Entity Selector -->
+                <!-- Entity Selector -->
                 <div class="filter-group">
                     <label for="entity">Target Entity</label>
                     <select name="entity" id="entity" onchange="updateFilterVisibility()">
+                        {% if perms.store.view_product %}
                         <option value="products" {% if entity == 'products' %}selected{% endif %}>Products Catalog</option>
+                        {% endif %}
+                        {% if perms.store.view_sale %}
                         <option value="sales" {% if entity == 'sales' %}selected{% endif %}>Sales Transactions</option>
+                        {% endif %}
+                        {% if perms.store.view_customer %}
                         <option value="customers" {% if entity == 'customers' %}selected{% endif %}>Customers Directory</option>
+                        {% endif %}
+                        {% if perms.store.view_inventory %}
                         <option value="inventory" {% if entity == 'inventory' %}selected{% endif %}>Inventory On-Hand</option>
+                        {% endif %}
                     </select>
                 </div>
 

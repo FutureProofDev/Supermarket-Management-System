@@ -1,21 +1,25 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.db.models import ProtectedError
+from django.contrib.auth.decorators import permission_required
 
 from ..models import Supplier
 from ..forms import SupplierForm
 
 
+@permission_required('store.view_supplier', raise_exception=True)
 def supplier_list(request):
     suppliers = Supplier.objects.all().order_by('name')
     return render(request, 'store/supplier/supplier_list.html', {'suppliers': suppliers})
 
 
+@permission_required('store.view_supplier', raise_exception=True)
 def supplier_detail(request, pk):
     supplier = get_object_or_404(Supplier, pk=pk)
     return render(request, 'store/supplier/supplier_detail.html', {'supplier': supplier})
 
 
+@permission_required('store.add_supplier', raise_exception=True)
 def supplier_create(request):
     if request.method == 'POST':
         form = SupplierForm(request.POST)
@@ -28,6 +32,7 @@ def supplier_create(request):
     return render(request, 'store/supplier/supplier_form.html', {'form': form, 'title': 'Add Supplier'})
 
 
+@permission_required('store.change_supplier', raise_exception=True)
 def supplier_update(request, pk):
     supplier = get_object_or_404(Supplier, pk=pk)
     if request.method == 'POST':
@@ -41,6 +46,7 @@ def supplier_update(request, pk):
     return render(request, 'store/supplier/supplier_form.html', {'form': form, 'title': 'Edit Supplier'})
 
 
+@permission_required('store.delete_supplier', raise_exception=True)
 def supplier_delete(request, pk):
     supplier = get_object_or_404(Supplier, pk=pk)
     if request.method == 'POST':
