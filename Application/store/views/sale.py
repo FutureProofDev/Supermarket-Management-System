@@ -40,7 +40,7 @@ def sale_detail(request, pk):
 
 @permission_required('store.add_sale', raise_exception=True)
 def checkout(request):
-    # Derive active employee from logged-in user
+    #  active employee from logged-in user
     employee = getattr(request.user, 'employee_profile', None)
 
     if not employee:

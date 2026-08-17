@@ -52,9 +52,7 @@ def product_delete(request, pk):
         try:
             product.delete()
         except ProtectedError:
-            # Inventory.product, PurchaseOrderItem.product, SaleItem.product
-            # are all PROTECT -- a product with stock/order/sale history
-            # can't be silently deleted.
+
             messages.error(
                 request,
                 f'Can\'t delete "{product.name}" — it still has inventory, purchase, or sale records linked to it.'

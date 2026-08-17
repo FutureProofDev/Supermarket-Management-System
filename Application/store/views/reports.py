@@ -31,9 +31,7 @@ def daily_sales_report(request):
     total_revenue = totals['total_revenue'] or 0
     total_transactions = totals['total_transactions'] or 0
 
-    # Group sale_item rows for the day by product -> qty sold + revenue.
-    # line_total is used (not quantity * unit_price) so this stays correct
-    # even for discounted lines (loyalty / near-expiry).
+
     product_breakdown = (
         SaleItem.objects
         .filter(sale__sale_date__date=report_date)
@@ -70,10 +68,9 @@ def reports_view(request):
     return render(request, 'store/reports/reports_view.html')
 
 
-# ---------------------------------------------------------------------
+
 # Report 1: Low-Stock & Near-Expiry Product Alert Report
-# Maps to Q6 & Q10 in advanced_scripts.sql
-# ---------------------------------------------------------------------
+
 @permission_required('store.view_inventory', raise_exception=True)
 def stock_alerts_report(request):
     today = date.today()
@@ -98,10 +95,7 @@ def stock_alerts_report(request):
     return render(request, 'store/reports/low_stock_expiry.html', context)
 
 
-# ---------------------------------------------------------------------
 # Report 2: Sales & Revenue Analytics Report
-# Maps to Q4 & Q8 in advanced_scripts.sql
-# ---------------------------------------------------------------------
 @permission_required('store.view_sale', raise_exception=True)
 def report_sales_analytics(request):
     # Total Revenue & Transaction Count

@@ -46,8 +46,7 @@ def purchaseorder_update(request, pk):
 
 @permission_required('store.delete_purchaseorder', raise_exception=True)
 def purchaseorder_delete(request, pk):
-    # PurchaseOrderItem.po is CASCADE -- deleting an order deletes its line
-    # items too, so no ProtectedError is possible here. No try/except needed.
+
     order = get_object_or_404(PurchaseOrder, pk=pk)
     if request.method == 'POST':
         po_id = order.po_id

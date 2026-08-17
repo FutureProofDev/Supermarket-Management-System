@@ -135,6 +135,8 @@ In `/admin/`, create additional `User` accounts, assign each to a Group (Invento
 
 ### 11. Run the server
 
+Open the Application folder in your terminal and execute the following command.
+
 ```bash
 python manage.py runserver
 ```

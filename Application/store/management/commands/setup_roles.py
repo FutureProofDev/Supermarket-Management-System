@@ -1,10 +1,8 @@
 from django.contrib.auth.models import Group, Permission
 from django.core.management.base import BaseCommand
 
-# Store Manager isn't listed here — that role is granted by making the
-# Django User a superuser (is_superuser=True), which bypasses permission
-# checks entirely. These three groups cover the differentiated,
-# restricted access levels.
+# Store Manager isn't listed here. That role is granted by making the
+# Django User a superuser  
 ROLE_PERMISSIONS = {
     'Inventory Officer': {
         'product': ['add', 'change', 'delete', 'view'],

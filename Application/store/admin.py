@@ -7,7 +7,7 @@ from .models import (
     Sale, SaleItem, LoyaltyCard
 )
 
-#  INLINES (Child rows inside Parent pages) 
+#  
 
 class SaleItemInline(admin.TabularInline):
     """Allows viewing and editing SaleItems directly inside the Sale page."""
@@ -29,11 +29,12 @@ class InventoryInline(admin.StackedInline):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    # Display FK values in list view columns
     list_display = ('name', 'category', 'supplier', 'unit_price', 'barcode', 'expiry_date')
-    # Filter list by FK relationships
+
+    
     list_filter = ('category', 'supplier')
-    # Search across FK fields (spans relationship using )
+
+   
     search_fields = ('name', 'barcode', 'category__name', 'supplier__name')
     inlines = [InventoryInline]
 
@@ -42,7 +43,7 @@ class SaleAdmin(admin.ModelAdmin):
     list_display = ('sale_id', 'sale_date', 'employee', 'customer', 'total_amount')
     list_filter = ('sale_date', 'employee')
     search_fields = ('sale_id', 'customer__first_name', 'customer__last_name')
-    # Shows SaleItem rows inline on the Sale page
+
     inlines = [SaleItemInline]
 
 @admin.register(PurchaseOrder)
@@ -57,11 +58,12 @@ class CustomerAdmin(admin.ModelAdmin):
     search_fields = ('first_name', 'last_name', 'phone')
 
     def get_loyalty_points(self, obj):
-        # Displays OneToOne FK relationship to LoyaltyCard
+
         return obj.loyalty_card.points_balance if hasattr(obj, 'loyalty_card') else "No Card"
     get_loyalty_points.short_description = "Loyalty Points"
 
-# Register remaining simple models
+
+
 admin.site.register(Supplier)
 admin.site.register(Category)
 admin.site.register(Employee)

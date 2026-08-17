@@ -51,9 +51,7 @@ class InventoryForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # On create, only offer products that don't already have an
-        # Inventory row (it's a OneToOne). On edit, keep the current
-        # product selectable even though it "already has" this row.
+
         qs = Product.objects.filter(inventory__isnull=True)
         if self.instance.pk:
             qs = qs | Product.objects.filter(pk=self.instance.product_id)
@@ -68,7 +66,6 @@ class LoyaltyCardForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Same OneToOne guard as Inventory, on Customer this time.
         qs = Customer.objects.filter(loyalty_card__isnull=True)
         if self.instance.pk:
             qs = qs | Customer.objects.filter(pk=self.instance.customer_id)
@@ -82,7 +79,6 @@ class SaleHeaderForm(forms.Form):
 
 class ProductChoiceField(forms.ModelChoiceField):
     def label_from_instance(self, obj):
-        # Displays name, unit price, and live quantity in the select dropdown
         qty = obj.inventory.quantity_on_hand if hasattr(obj, 'inventory') else 0
         return f"{obj.name} — GHS {obj.unit_price:.2f} ({qty} in stock)"
 
