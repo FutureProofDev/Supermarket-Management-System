@@ -81,7 +81,7 @@ This creates the `supermarket_db` database and all core application tables (`pro
 ### 4. Seed initial data
 
 ```bash
-mysql -u root -p supermarket_db < Database/dml_script.sql
+mysql -u root -p supermarket_db < Database/insert_data.sql
 ```
 
 This populates suppliers, categories, employees, customers, products, inventory, purchase orders, sales, and loyalty cards with realistic sample data.
@@ -119,7 +119,7 @@ python manage.py migrate store --fake
 python manage.py setup_roles
 ```
 
-This creates the **Inventory Officer**, **Head Cashier**, and **Cashier** groups with their correct model-level permissions. The **Store Manager** role is not a group — it's granted by making a Django user a superuser (superusers bypass all permission checks).
+This creates the **Inventory Officer**, **Head Cashier**, and **Cashier** groups with their correct model-level permissions. The **Store Manager** role is not a group. It's granted by making a Django user a superuser (superusers bypass all permission checks).
 
 ### 9. Create your Store Manager account
 
