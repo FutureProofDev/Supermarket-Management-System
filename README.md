@@ -51,7 +51,7 @@ Generate a django secrete key with this command:
 python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
 ```
 
-Create a `.env` file in the project root with your database credentials:
+Create a `.env` file in the Application project root with your database credentials:
 
 ```
 DB_NAME=supermarket_db
